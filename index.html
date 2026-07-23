@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ngô Minh Nhựt — Fullstack Developer</title>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Be+Vietnam+Pro:wght@400;600;700&family=Orbitron:wght@700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="scanlines"></div>
+
+<nav>
+  <a href="#hero" class="nav-logo">NMN.DEV</a>
+  <ul class="nav-links">
+    <li><a href="#about">ABOUT</a></li>
+    <li><a href="#skills">SKILLS</a></li>
+    <li><a href="#projects">PROJECTS</a></li>
+    <li><a href="#education">HỌC VẤN</a></li>
+    <li><a href="#contact">CONTACT</a></li>
+  </ul>
+  <!-- Nút chuyển ngôn ngữ: hiện "VN" vì đang ở trang Tiếng Việt -->
+  <a href="index-en.html" class="lang-btn" title="Switch to English">VN</a>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-content">
+    <div class="hero-text">
+      <p class="hero-label">// FULLSTACK DEVELOPER — HO CHI MINH CITY, VN</p>
+      <h1>
+        NGÔ MINH<br>
+        <span class="highlight">NHỰT<span class="cursor"></span></span>
+      </h1>
+      <p class="hero-subtitle">
+        Building from <em>pixel</em> to <em>server</em> — powered by code &amp; <em>AI</em>.
+      </p>
+      <div class="hero-cta">
+        <a href="#projects" class="btn-primary">XEM DỰ ÁN</a>
+        <a href="#contact" class="btn-ghost">LIÊN HỆ NGAY</a>
+        <a href="cv-vi.pdf" download="CV_NgoMinhNhut_VI.pdf" class="btn-download">&#11015; TẢI CV</a>
+      </div>
+    </div>
+
+    <!-- AVATAR -->
+    <div class="hero-avatar-wrap">
+      <div class="avatar-frame">
+        <!-- 
+          Thay src="avatar.jpg" bằng tên file ảnh của bạn.
+          Đặt file ảnh cùng thư mục với index.html.
+        -->
+        <img src="avatar.jpg" alt="Ngô Minh Nhựt" class="avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+        <div class="avatar-placeholder">
+          <span class="avatar-icon">👤</span>
+          <span class="avatar-hint">Đặt file ảnh<br>tên <strong>avatar.jpg</strong><br>vào cùng thư mục</span>
+        </div>
+        <div class="avatar-glow"></div>
+        <div class="avatar-corner tl"></div>
+        <div class="avatar-corner tr"></div>
+        <div class="avatar-corner bl"></div>
+        <div class="avatar-corner br"></div>
+      </div>
+      <div class="avatar-badge">
+        <span class="badge-dot"></span>
+        AVAILABLE FOR WORK
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-header">
+    <span class="section-num">01</span>
+    <h2>ABOUT</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-text">
+      <p>Xin chào! Tôi là <strong class="name-cyan">Ngô Minh Nhựt</strong> — một Fullstack Developer đang trong hành trình xây dựng những sản phẩm web thực sự hữu ích, từ giao diện người dùng đến kiến trúc backend.</p>
+      <p>Điểm khác biệt của tôi là khả năng khai thác <span class="highlight-ai">AI TOOLS</span> để tăng tốc phát triển, debug thông minh hơn và giải quyết vấn đề hiệu quả — một kỹ năng thiết yếu trong thời đại lập trình hiện đại.</p>
+      <p>Tôi tin vào việc học qua thực hành. Mỗi dự án là một bài học, mỗi bug là một cơ hội để trở nên tốt hơn.</p>
+    </div>
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-num">3</div>
+        <div class="stat-label">DỰ ÁN HOÀN THÀNH</div>
+      </div>
+      <div class="stat-card pink">
+        <div class="stat-num">80%</div>
+        <div class="stat-label">AI PROFICIENCY</div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-num">4+</div>
+        <div class="stat-label">CÔNG NGHỆ CHÍNH</div>
+      </div>
+      <div class="stat-card yellow">
+        <div class="stat-num">∞</div>
+        <div class="stat-label">ĐAM MÊ HỌC HỎI</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SKILLS -->
+<section id="skills">
+  <div class="section-header">
+    <span class="section-num">02</span>
+    <h2>SKILLS</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="skills-grid">
+
+    <div class="skill-group">
+      <div class="skill-group-title">// FRONTEND</div>
+      <div class="skill-item">
+        <div class="skill-name-row">
+          <span class="skill-name">HTML</span>
+          <span class="skill-pct">60%</span>
+        </div>
+        <div class="skill-bar"><div class="skill-fill cyan" data-w="60"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name-row">
+          <span class="skill-name">CSS</span>
+          <span class="skill-pct">60%</span>
+        </div>
+        <div class="skill-bar"><div class="skill-fill cyan" data-w="60"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name-row">
+          <span class="skill-name">JavaScript</span>
+          <span class="skill-pct">75%</span>
+        </div>
+        <div class="skill-bar"><div class="skill-fill cyan" data-w="75"></div></div>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-group-title pink-title">// BACKEND & FRAMEWORK</div>
+      <div class="skill-item">
+        <div class="skill-name-row">
+          <span class="skill-name">React.js</span>
+          <span class="skill-pct">60%</span>
+        </div>
+        <div class="skill-bar"><div class="skill-fill pink" data-w="60"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name-row">
+          <span class="skill-name">Node.js</span>
+          <span class="skill-pct">60%</span>
+        </div>
+        <div class="skill-bar"><div class="skill-fill pink" data-w="60"></div></div>
+      </div>
+    </div>
+
+    <div class="skill-group purple-border">
+      <div class="skill-group-title purple-title">// AI TOOLS — ĐIỂM MẠNH</div>
+      <div class="skill-item">
+        <div class="skill-name-row">
+          <span class="skill-name">AI-Assisted Development</span>
+          <span class="skill-pct">80%</span>
+        </div>
+        <div class="skill-bar"><div class="skill-fill purple" data-w="80"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name-row">
+          <span class="skill-name">Prompt Engineering</span>
+          <span class="skill-pct">78%</span>
+        </div>
+        <div class="skill-bar"><div class="skill-fill purple" data-w="78"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name-row">
+          <span class="skill-name">AI Debugging &amp; Research</span>
+          <span class="skill-pct">80%</span>
+        </div>
+        <div class="skill-bar"><div class="skill-fill purple" data-w="80"></div></div>
+      </div>
+    </div>
+
+    <div class="skill-group">
+      <div class="skill-group-title yellow-title">// SOFT SKILLS</div>
+      <div class="skill-item">
+        <div class="skill-name-row">
+          <span class="skill-name">Tự học &amp; Nghiên cứu</span>
+          <span class="skill-pct">90%</span>
+        </div>
+        <div class="skill-bar"><div class="skill-fill yellow" data-w="90"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name-row">
+          <span class="skill-name">Problem Solving</span>
+          <span class="skill-pct">80%</span>
+        </div>
+        <div class="skill-bar"><div class="skill-fill yellow" data-w="80"></div></div>
+      </div>
+      <div class="skill-item">
+        <div class="skill-name-row">
+          <span class="skill-name">Học nhanh / Adapt</span>
+          <span class="skill-pct">85%</span>
+        </div>
+        <div class="skill-bar"><div class="skill-fill yellow" data-w="85"></div></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-header">
+    <span class="section-num">03</span>
+    <h2>PROJECTS</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="projects-grid">
+
+    <div class="project-card featured">
+      <div>
+        <span class="project-tag">FEATURED PROJECT</span>
+        <div class="project-title">E-COMMERCE WEBSITE</div>
+        <p class="project-desc">Trang web bán hàng với giao diện người dùng hiện đại, hiển thị sản phẩm, giỏ hàng và luồng mua hàng hoàn chỉnh. Xây dựng với HTML/CSS/JavaScript thuần.</p>
+        <div class="tech-tags">
+          <span class="tech-tag">HTML</span>
+          <span class="tech-tag">CSS</span>
+          <span class="tech-tag">JAVASCRIPT</span>
+        </div>
+        <div class="project-note">// dự án thực hành cá nhân</div>
+      </div>
+      <div class="project-visual">
+        <div class="code-rain" id="codeRain"></div>
+        <span class="visual-label">[ SHOP.SYS ]</span>
+      </div>
+    </div>
+
+    <div class="project-card">
+      <span class="project-tag pink">FULLSTACK</span>
+      <div class="project-title">QUẢN LÝ NHÂN SỰ</div>
+      <p class="project-desc">Ứng dụng quản lý nhân sự với chức năng thêm, sửa, xóa, tìm kiếm nhân viên. Giao diện bảng dữ liệu tương tác, xử lý logic phân loại và lọc.</p>
+      <div class="tech-tags">
+        <span class="tech-tag pink">REACT</span>
+        <span class="tech-tag pink">NODE.JS</span>
+        <span class="tech-tag pink">JAVASCRIPT</span>
+      </div>
+      <div class="project-note pink-note">// dự án thực hành cá nhân</div>
+    </div>
+
+    <div class="project-card">
+      <span class="project-tag purple">WEB APP</span>
+      <div class="project-title">CALCULATOR APP</div>
+      <p class="project-desc">Web app máy tính với giao diện tương tác, hỗ trợ các phép tính cơ bản và nâng cao. Chú trọng vào UX mượt mà và xử lý edge cases.</p>
+      <div class="tech-tags">
+        <span class="tech-tag purple">JAVASCRIPT</span>
+        <span class="tech-tag purple">HTML</span>
+        <span class="tech-tag purple">CSS</span>
+      </div>
+      <div class="project-note purple-note">// dự án thực hành cá nhân</div>
+    </div>
+
+  </div>
+</section>
+
+
+<!-- EDUCATION -->
+<section id="education">
+  <div class="section-header">
+    <span class="section-num">04</span>
+    <h2>HỌC VẤN</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="edu-grid">
+
+    <!-- Bằng đại học -->
+    <div class="edu-card edu-main">
+      <div class="edu-icon-col">
+        <div class="edu-icon">🎓</div>
+        <div class="edu-vline"></div>
+      </div>
+      <div class="edu-content">
+        <div class="edu-tag">ĐẠI HỌC</div>
+        <div class="edu-school">Đại Học Bách Khoa TP.HCM</div>
+        <div class="edu-degree">Kỹ sư Điện tử - Viễn thông</div>
+        <div class="edu-meta">
+          <span class="edu-year">📅 2024</span>
+          <span class="edu-dot">·</span>
+          <span class="edu-location">TP. Hồ Chí Minh</span>
+        </div>
+        <p class="edu-desc">Nền tảng kỹ thuật vững chắc từ chương trình kỹ sư Bách Khoa — tư duy logic, phân tích hệ thống và giải quyết vấn đề phức tạp. Chuyển hướng sang Fullstack Development với lợi thế am hiểu sâu về phần cứng và hệ thống nhúng.</p>
+        <div class="edu-highlights">
+          <span class="edu-hl">Lập trình hệ thống</span>
+          <span class="edu-hl">Xử lý tín hiệu số</span>
+          <span class="edu-hl">Kiến trúc máy tính</span>
+          <span class="edu-hl">Mạng máy tính</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tự học / Chuyển ngành -->
+    <div class="edu-card">
+      <div class="edu-icon-col">
+        <div class="edu-icon">💻</div>
+      </div>
+      <div class="edu-content">
+        <div class="edu-tag" style="background:rgba(185,103,255,0.12);color:var(--neon-purple);border-color:rgba(185,103,255,0.3)">TỰ HỌC</div>
+        <div class="edu-school" style="color:var(--neon-purple)">Fullstack Web Development</div>
+        <div class="edu-degree">HTML · CSS · JavaScript · React · Node.js · AI Tools</div>
+        <div class="edu-meta">
+          <span class="edu-year">📅 2023 — nay</span>
+        </div>
+        <p class="edu-desc">Chủ động chuyển ngành sang lập trình web thông qua tự học có hệ thống — từ nền tảng frontend đến backend, kết hợp sử dụng AI để tăng tốc quá trình học và phát triển.</p>
+        <div class="edu-highlights">
+          <span class="edu-hl" style="color:var(--neon-purple);border-color:rgba(185,103,255,0.25)">React.js</span>
+          <span class="edu-hl" style="color:var(--neon-purple);border-color:rgba(185,103,255,0.25)">Node.js</span>
+          <span class="edu-hl" style="color:var(--neon-purple);border-color:rgba(185,103,255,0.25)">AI-Assisted Dev</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-header">
+    <span class="section-num">05</span>
+    <h2>CONTACT</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="contact-wrapper">
+    <div>
+      <p class="contact-text">Tôi đang tìm kiếm cơ hội đầu tiên để đóng góp và phát triển cùng một team. Hãy liên hệ nếu bạn muốn cùng xây dựng điều gì đó!</p>
+      <div class="contact-links">
+        <a href="mailto:kdc.1110639@gmail.com" class="contact-link">
+          <div class="contact-link-icon">✉</div>
+          <span>kdc.1110639@gmail.com</span>
+        </a>
+        <div>
+          <a href="https://github.com/NrocneK" target="_blank" class="contact-link purple-link">
+            <div class="contact-link-icon purple-icon">GH</div>
+            <span>github.com/NrocneK</span>
+          </a>
+          <p class="github-note">// đang học cách sử dụng Git — coming soon!</p>
+        </div>
+      </div>
+    </div>
+    <div class="contact-form">
+      <div class="form-group">
+        <label class="form-label">// TÊN CỦA BẠN</label>
+        <input type="text" class="form-input" placeholder="Nguyen Van A">
+      </div>
+      <div class="form-group">
+        <label class="form-label">// EMAIL</label>
+        <input type="email" class="form-input" placeholder="hello@email.com">
+      </div>
+      <div class="form-group">
+        <label class="form-label">// TIN NHẮN</label>
+        <textarea class="form-input" placeholder="Xin chào Nhựt! Tôi muốn..."></textarea>
+      </div>
+      <button class="btn-primary" id="sendBtn">GỬI TIN NHẮN →</button>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>DESIGNED &amp; BUILT BY <span>NGÔ MINH NHỰT</span> — 2025</p>
+  <p class="footer-sub">// html · css · javascript · ai-assisted</p>
+</footer>
+
+<script src="script.js"></script>
+</body>
+</html>
