@@ -1,368 +1,333 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ngo Minh Nhut — Fullstack Developer</title>
-<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style-en.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ngo Minh Nhut — Fullstack Developer</title>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;600;700;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet" href="style-en.css">
 </head>
+
 <body>
-<div class="scanlines"></div>
+  <div class="scanlines"></div>
 
-<nav>
-  <a href="#hero" class="nav-logo">NMN.DEV</a>
-  <ul class="nav-links">
-    <li><a href="#about">ABOUT</a></li>
-    <li><a href="#skills">SKILLS</a></li>
-    <li><a href="#projects">PROJECTS</a></li>
-    <li><a href="#education">EDUCATION</a></li>
-    <li><a href="#contact">CONTACT</a></li>
-  </ul>
-  <!-- Nút chuyển ngôn ngữ: hiện "EN" vì đang ở trang English -->
-  <a href="index.html" class="lang-btn" title="Chuyển sang Tiếng Việt">EN</a>
-</nav>
+  <nav>
+    <a href="#hero" class="nav-logo">NMN.DEV</a>
+    <ul class="nav-links">
+      <li><a href="#about">ABOUT</a></li>
+      <li><a href="#skills">SKILLS</a></li>
+      <li><a href="#projects">PROJECTS</a></li>
+      <li><a href="#education">EDUCATION</a></li>
+      <li><a href="#contact">CONTACT</a></li>
+    </ul>
+    <!-- Nút chuyển ngôn ngữ: hiện "EN" vì đang ở trang English -->
+    <a href="index.html" class="lang-btn" title="Chuyển sang Tiếng Việt">EN</a>
+  </nav>
 
-<!-- HERO -->
-<section id="hero">
-  <div class="hero-content">
-    <div class="hero-text">
-      <p class="hero-label">// FULLSTACK DEVELOPER — HO CHI MINH CITY, VN</p>
-      <h1>
-        NGO MINH<br>
-        <span class="highlight">NHUT<span class="cursor"></span></span>
-      </h1>
-      <p class="hero-subtitle">
-        Building from <em>pixel</em> to <em>server</em><br>
-        powered by code &amp; <em>AI</em>.
-      </p>
-      <div class="hero-cta">
-        <a href="#projects" class="btn-primary">VIEW PROJECTS</a>
-        <a href="#contact" class="btn-ghost">CONTACT ME</a>
-        <a href="cv-en.pdf" download="CV_NgoMinhNhut_EN.pdf" class="btn-download">&#11015; DOWNLOAD CV</a>
+  <!-- HERO -->
+  <section id="hero">
+    <div class="hero-content">
+      <div class="hero-text">
+        <p class="hero-label">// FULLSTACK DEVELOPER — HO CHI MINH CITY, VN</p>
+        <h1>
+          NGO MINH<br>
+          <span class="highlight">NHUT<span class="cursor"></span></span>
+        </h1>
+        <p class="hero-subtitle">
+          Building from <em>pixel</em> to <em>server</em><br>
+          powered by code &amp; <em>AI</em>.
+        </p>
+        <div class="hero-cta">
+          <a href="#projects" class="btn-primary">VIEW PROJECTS</a>
+          <a href="#contact" class="btn-ghost">CONTACT ME</a>
+          <a href="cv-en.pdf" download="CV_NgoMinhNhut_EN.pdf" class="btn-download">&#11015; DOWNLOAD CV</a>
+        </div>
+      </div>
+
+      <!-- AVATAR -->
+      <div class="hero-avatar-wrap">
+        <div class="avatar-frame">
+          <img src="avatar.jpg" alt="Ngo Minh Nhut" class="avatar-img"
+            onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+          <div class="avatar-placeholder">
+            <span class="avatar-icon">👤</span>
+            <span class="avatar-hint">Place your photo<br>named <strong>avatar.jpg</strong><br>in this folder</span>
+          </div>
+          <div class="avatar-glow"></div>
+          <div class="avatar-corner tl"></div>
+          <div class="avatar-corner tr"></div>
+          <div class="avatar-corner bl"></div>
+          <div class="avatar-corner br"></div>
+        </div>
+        <div class="avatar-badge">
+          <span class="badge-dot"></span>
+          AVAILABLE FOR WORK
+        </div>
       </div>
     </div>
+  </section>
 
-    <!-- AVATAR -->
-    <div class="hero-avatar-wrap">
-      <div class="avatar-frame">
-        <img src="avatar.jpg" alt="Ngo Minh Nhut" class="avatar-img"
-             onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
-        <div class="avatar-placeholder">
-          <span class="avatar-icon">👤</span>
-          <span class="avatar-hint">Place your photo<br>named <strong>avatar.jpg</strong><br>in this folder</span>
-        </div>
-        <div class="avatar-glow"></div>
-        <div class="avatar-corner tl"></div>
-        <div class="avatar-corner tr"></div>
-        <div class="avatar-corner bl"></div>
-        <div class="avatar-corner br"></div>
+  <!-- ABOUT -->
+  <section id="about">
+    <div class="section-header">
+      <span class="section-num">01</span>
+      <h2>ABOUT</h2>
+      <div class="section-line"></div>
+    </div>
+    <div class="about-grid">
+      <div class="about-text">
+        <p>Hello! I'm <strong class="name-cyan">Ngo Minh Nhut</strong> — a Fullstack Developer on a journey to build
+          meaningful web products, from user interfaces to backend architecture.</p>
+        <p>My edge is the ability to leverage <span class="highlight-ai">AI TOOLS</span> to accelerate development,
+          debug smarter, and solve problems more efficiently — an essential skill in the modern era of software
+          engineering.</p>
+        <p>I believe in learning by doing. Every project is a lesson, every bug is an opportunity to grow. I'm eager to
+          contribute to a dynamic team where I can create real impact.</p>
       </div>
-      <div class="avatar-badge">
-        <span class="badge-dot"></span>
-        AVAILABLE FOR WORK
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-num">4</div>
+          <div class="stat-label">PROJECTS BUILT</div>
+        </div>
+        <div class="stat-card pink">
+          <div class="stat-num">80%</div>
+          <div class="stat-label">AI PROFICIENCY</div>
+        </div>
+        <div class="stat-card purple">
+          <div class="stat-num">4+</div>
+          <div class="stat-label">CORE TECHNOLOGIES</div>
+        </div>
+        <div class="stat-card yellow">
+          <div class="stat-num">∞</div>
+          <div class="stat-label">PASSION TO BUILD</div>
+        </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- ABOUT -->
-<section id="about">
-  <div class="section-header">
-    <span class="section-num">01</span>
-    <h2>ABOUT</h2>
-    <div class="section-line"></div>
-  </div>
-  <div class="about-grid">
-    <div class="about-text">
-      <p>Hello! I'm <strong class="name-cyan">Ngo Minh Nhut</strong> — a Fullstack Developer on a journey to build meaningful web products, from user interfaces to backend architecture.</p>
-      <p>My edge is the ability to leverage <span class="highlight-ai">AI TOOLS</span> to accelerate development, debug smarter, and solve problems more efficiently — an essential skill in the modern era of software engineering.</p>
-      <p>I believe in learning by doing. Every project is a lesson, every bug is an opportunity to grow. I'm eager to contribute to a dynamic team where I can create real impact.</p>
+  <!-- SKILLS -->
+  <section id="skills">
+    <div class="section-header">
+      <span class="section-num">02</span>
+      <h2>SKILLS</h2>
+      <div class="section-line"></div>
     </div>
-    <div class="stat-grid">
-      <div class="stat-card">
-        <div class="stat-num">3</div>
-        <div class="stat-label">PROJECTS BUILT</div>
+    <div class="skills-grid">
+
+      <div class="skill-group">
+        <div class="skill-group-title">// FRONTEND</div>
+        <div class="skill-item">
+          <div class="skill-name-row">
+            <span class="skill-name">HTML</span>
+            <span class="skill-pct">60%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill cyan" data-w="60"></div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name-row">
+            <span class="skill-name">CSS</span>
+            <span class="skill-pct">60%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill cyan" data-w="60"></div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name-row">
+            <span class="skill-name">JavaScript</span>
+            <span class="skill-pct">75%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill cyan" data-w="75"></div>
+          </div>
+        </div>
       </div>
-      <div class="stat-card pink">
-        <div class="stat-num">80%</div>
-        <div class="stat-label">AI PROFICIENCY</div>
+
+      <div class="skill-group">
+        <div class="skill-group-title pink-title">// BACKEND & FRAMEWORK</div>
+        <div class="skill-item">
+          <div class="skill-name-row">
+            <span class="skill-name">React.js</span>
+            <span class="skill-pct">60%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill pink" data-w="60"></div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name-row">
+            <span class="skill-name">Node.js</span>
+            <span class="skill-pct">60%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill pink" data-w="60"></div>
+          </div>
+        </div>
       </div>
-      <div class="stat-card purple">
-        <div class="stat-num">4+</div>
-        <div class="stat-label">CORE TECHNOLOGIES</div>
+
+      <div class="skill-group purple-border">
+        <div class="skill-group-title purple-title">// AI TOOLS — KEY STRENGTH</div>
+        <div class="skill-item">
+          <div class="skill-name-row">
+            <span class="skill-name">AI-Assisted Development</span>
+            <span class="skill-pct">80%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill purple" data-w="80"></div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name-row">
+            <span class="skill-name">Prompt Engineering</span>
+            <span class="skill-pct">78%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill purple" data-w="78"></div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name-row">
+            <span class="skill-name">AI Debugging &amp; Research</span>
+            <span class="skill-pct">80%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill purple" data-w="80"></div>
+          </div>
+        </div>
       </div>
-      <div class="stat-card yellow">
-        <div class="stat-num">∞</div>
-        <div class="stat-label">PASSION TO BUILD</div>
+
+      <div class="skill-group">
+        <div class="skill-group-title yellow-title">// SOFT SKILLS</div>
+        <div class="skill-item">
+          <div class="skill-name-row">
+            <span class="skill-name">Self-learning &amp; Research</span>
+            <span class="skill-pct">90%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill yellow" data-w="90"></div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name-row">
+            <span class="skill-name">Problem Solving</span>
+            <span class="skill-pct">80%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill yellow" data-w="80"></div>
+          </div>
+        </div>
+        <div class="skill-item">
+          <div class="skill-name-row">
+            <span class="skill-name">Fast Learning / Adaptability</span>
+            <span class="skill-pct">85%</span>
+          </div>
+          <div class="skill-bar">
+            <div class="skill-fill yellow" data-w="85"></div>
+          </div>
+        </div>
       </div>
+
     </div>
-  </div>
-</section>
+  </section>
 
-<!-- SKILLS -->
-<section id="skills">
-  <div class="section-header">
-    <span class="section-num">02</span>
-    <h2>SKILLS</h2>
-    <div class="section-line"></div>
-  </div>
-  <div class="skills-grid">
-
-    <div class="skill-group">
-      <div class="skill-group-title">// FRONTEND</div>
-      <div class="skill-item">
-        <div class="skill-name-row">
-          <span class="skill-name">HTML</span>
-          <span class="skill-pct">60%</span>
-        </div>
-        <div class="skill-bar"><div class="skill-fill cyan" data-w="60"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-name-row">
-          <span class="skill-name">CSS</span>
-          <span class="skill-pct">60%</span>
-        </div>
-        <div class="skill-bar"><div class="skill-fill cyan" data-w="60"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-name-row">
-          <span class="skill-name">JavaScript</span>
-          <span class="skill-pct">75%</span>
-        </div>
-        <div class="skill-bar"><div class="skill-fill cyan" data-w="75"></div></div>
-      </div>
+  <!-- PROJECTS -->
+  <section id="projects">
+    <div class="section-header">
+      <span class="section-num">03</span>
+      <h2>PROJECTS</h2>
+      <div class="section-line"></div>
     </div>
+    <div class="projects-grid">
 
-    <div class="skill-group">
-      <div class="skill-group-title pink-title">// BACKEND & FRAMEWORK</div>
-      <div class="skill-item">
-        <div class="skill-name-row">
-          <span class="skill-name">React.js</span>
-          <span class="skill-pct">60%</span>
+      <!-- FEATURED: WMS Pro -->
+      <div class="project-card featured">
+        <div>
+          <span class="project-tag">LATEST PROJECT</span>
+          <div class="project-title">WMS PRO — WAREHOUSE MANAGEMENT</div>
+          <p class="project-desc">Professional warehouse management system for bookstore & publishing operations.
+            Real-time dashboard, multi-warehouse inventory, Excel import/export, picking slip generation, PDF printing,
+            role & warehouse-based permissions, full audit logs. Deployed on Vercel + Render + Aiven MySQL.</p>
+          <div class="tech-tags">
+            <span class="tech-tag">REACT 19</span>
+            <span class="tech-tag">VITE</span>
+            <span class="tech-tag">TAILWIND V4</span>
+            <span class="tech-tag">NODE.JS</span>
+            <span class="tech-tag">EXPRESS</span>
+            <span class="tech-tag">MYSQL</span>
+            <span class="tech-tag">JWT</span>
+            <span class="tech-tag">jsPDF</span>
+            <span class="tech-tag">SheetJS</span>
+          </div>
+          <div class="project-links">
+            <a href="https://github.com/NrocneK/wms-pro-frontend" target="_blank" class="project-link-btn">⌥
+              Frontend</a>
+            <a href="https://github.com/NrocneK/wms-pro-backend" target="_blank" class="project-link-btn">⌥ Backend</a>
+          </div>
         </div>
-        <div class="skill-bar"><div class="skill-fill pink" data-w="60"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-name-row">
-          <span class="skill-name">Node.js</span>
-          <span class="skill-pct">60%</span>
+        <div class="project-visual">
+          <div class="code-rain" id="codeRain"></div>
+          <span class="visual-label">[ WMS.PRO ]</span>
         </div>
-        <div class="skill-bar"><div class="skill-fill pink" data-w="60"></div></div>
       </div>
-    </div>
 
-    <div class="skill-group purple-border">
-      <div class="skill-group-title purple-title">// AI TOOLS — KEY STRENGTH</div>
-      <div class="skill-item">
-        <div class="skill-name-row">
-          <span class="skill-name">AI-Assisted Development</span>
-          <span class="skill-pct">80%</span>
+      <!-- BagStore -->
+      <div class="project-card">
+        <span class="project-tag pink">FULLSTACK</span>
+        <div class="project-title">BAGSTORE — E-COMMERCE</div>
+        <p class="project-desc">Full-featured e-commerce platform for bags & backpacks (V10). JWT auth, hybrid cart,
+          MoMo + VietQR payments, admin dashboard, blog, public order tracking. 13 MySQL tables, 45+ REST API endpoints.
+        </p>
+        <div class="tech-tags">
+          <span class="tech-tag pink">REACT 18</span>
+          <span class="tech-tag pink">NODE.JS</span>
+          <span class="tech-tag pink">MYSQL</span>
+          <span class="tech-tag pink">JWT</span>
+          <span class="tech-tag pink">MOMO</span>
         </div>
-        <div class="skill-bar"><div class="skill-fill purple" data-w="80"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-name-row">
-          <span class="skill-name">Prompt Engineering</span>
-          <span class="skill-pct">78%</span>
+        <div class="project-links">
+          <a href="https://github.com/NrocneK/my-shop" target="_blank" class="project-link-btn pink-link">⌥ GitHub</a>
         </div>
-        <div class="skill-bar"><div class="skill-fill purple" data-w="78"></div></div>
       </div>
-      <div class="skill-item">
-        <div class="skill-name-row">
-          <span class="skill-name">AI Debugging &amp; Research</span>
-          <span class="skill-pct">80%</span>
-        </div>
-        <div class="skill-bar"><div class="skill-fill purple" data-w="80"></div></div>
-      </div>
-    </div>
 
-    <div class="skill-group">
-      <div class="skill-group-title yellow-title">// SOFT SKILLS</div>
-      <div class="skill-item">
-        <div class="skill-name-row">
-          <span class="skill-name">Self-learning &amp; Research</span>
-          <span class="skill-pct">90%</span>
+      <!-- HRMS -->
+      <div class="project-card">
+        <span class="project-tag purple">FULLSTACK</span>
+        <div class="project-title">HRMS — HR MANAGEMENT</div>
+        <p class="project-desc">Human resource management system built with Next.js 14 App Router. Attendance
+          check-in/out, department management, Admin/HR/Employee role-based access, personal profiles. Deployed on
+          Vercel + PlanetScale MySQL.</p>
+        <div class="tech-tags">
+          <span class="tech-tag purple">NEXT.JS 14</span>
+          <span class="tech-tag purple">PRISMA</span>
+          <span class="tech-tag purple">MYSQL</span>
+          <span class="tech-tag purple">TAILWIND</span>
+          <span class="tech-tag purple">NEXTAUTH</span>
         </div>
-        <div class="skill-bar"><div class="skill-fill yellow" data-w="90"></div></div>
-      </div>
-      <div class="skill-item">
-        <div class="skill-name-row">
-          <span class="skill-name">Problem Solving</span>
-          <span class="skill-pct">80%</span>
+        <div class="project-links">
+          <a href="https://github.com/NrocneK/my-hrms" target="_blank" class="project-link-btn purple-link">⌥ GitHub</a>
         </div>
-        <div class="skill-bar"><div class="skill-fill yellow" data-w="80"></div></div>
       </div>
-      <div class="skill-item">
-        <div class="skill-name-row">
-          <span class="skill-name">Fast Learning / Adaptability</span>
-          <span class="skill-pct">85%</span>
-        </div>
-        <div class="skill-bar"><div class="skill-fill yellow" data-w="85"></div></div>
-      </div>
-    </div>
 
-  </div>
-</section>
-
-<!-- PROJECTS -->
-<section id="projects">
-  <div class="section-header">
-    <span class="section-num">03</span>
-    <h2>PROJECTS</h2>
-    <div class="section-line"></div>
-  </div>
-  <div class="projects-grid">
-
-    <div class="project-card featured">
-      <div>
-        <span class="project-tag">FEATURED PROJECT</span>
-        <div class="project-title">E-COMMERCE PLATFORM</div>
-        <p class="project-desc">A fully functional online store with a modern UI — product listings, shopping cart, and a complete checkout flow. Built with vanilla HTML, CSS, and JavaScript.</p>
+      <!-- Calculator -->
+      <div class="project-card">
+        <span class="project-tag">WEB APP</span>
+        <div class="project-title">CALCULATOR APP</div>
+        <p class="project-desc">Clean and intuitive calculator web app supporting basic and advanced operations. Built
+          with vanilla HTML/CSS/JS — no framework dependency. Architecture designed to be ready for Mobile App
+          conversion.</p>
         <div class="tech-tags">
           <span class="tech-tag">HTML</span>
           <span class="tech-tag">CSS</span>
           <span class="tech-tag">JAVASCRIPT</span>
         </div>
-        <div class="project-note">// personal practice project</div>
-      </div>
-      <div class="project-visual">
-        <div class="code-rain" id="codeRain"></div>
-        <span class="visual-label">[ SHOP.SYS ]</span>
-      </div>
-    </div>
-
-    <div class="project-card">
-      <span class="project-tag pink">FULLSTACK</span>
-      <div class="project-title">HR MANAGEMENT SYSTEM</div>
-      <p class="project-desc">An HR management app with full CRUD operations — add, edit, delete, and search employees. Features interactive data tables with sorting and filtering logic.</p>
-      <div class="tech-tags">
-        <span class="tech-tag pink">REACT</span>
-        <span class="tech-tag pink">NODE.JS</span>
-        <span class="tech-tag pink">JAVASCRIPT</span>
-      </div>
-      <div class="project-note pink-note">// personal practice project</div>
-    </div>
-
-    <div class="project-card">
-      <span class="project-tag purple">WEB APP</span>
-      <div class="project-title">CALCULATOR APP</div>
-      <p class="project-desc">An interactive calculator web app supporting basic and advanced operations. Focused on smooth UX and thorough edge case handling for a reliable experience.</p>
-      <div class="tech-tags">
-        <span class="tech-tag purple">JAVASCRIPT</span>
-        <span class="tech-tag purple">HTML</span>
-        <span class="tech-tag purple">CSS</span>
-      </div>
-      <div class="project-note purple-note">// personal practice project</div>
-    </div>
-
-  </div>
-</section>
-
-
-<!-- EDUCATION -->
-<section id="education">
-  <div class="section-header">
-    <span class="section-num">04</span>
-    <h2>EDUCATION</h2>
-    <div class="section-line"></div>
-  </div>
-  <div class="edu-grid">
-
-    <div class="edu-card edu-main">
-      <div class="edu-icon-col">
-        <div class="edu-icon">🎓</div>
-        <div class="edu-vline"></div>
-      </div>
-      <div class="edu-content">
-        <div class="edu-tag">UNIVERSITY</div>
-        <div class="edu-school">Ho Chi Minh City University of Technology (HCMUT)</div>
-        <div class="edu-degree">Bachelor of Engineering — Electronics &amp; Telecommunications</div>
-        <div class="edu-meta">
-          <span class="edu-year">📅 2024</span>
-          <span class="edu-dot">·</span>
-          <span class="edu-location">Ho Chi Minh City, Vietnam</span>
-        </div>
-        <p class="edu-desc">Solid engineering foundation from one of Vietnam's top technical universities — strong analytical thinking, systems design, and complex problem-solving skills. Pivoted to Fullstack Development leveraging deep knowledge of hardware architecture and embedded systems.</p>
-        <div class="edu-highlights">
-          <span class="edu-hl">Systems Programming</span>
-          <span class="edu-hl">Digital Signal Processing</span>
-          <span class="edu-hl">Computer Architecture</span>
-          <span class="edu-hl">Computer Networks</span>
+        <div class="project-links">
+          <a href="https://github.com/NrocneK/my-calculator" target="_blank" class="project-link-btn">⌥ GitHub</a>
         </div>
       </div>
+
     </div>
-
-    <div class="edu-card">
-      <div class="edu-icon-col">
-        <div class="edu-icon">💻</div>
-      </div>
-      <div class="edu-content">
-        <div class="edu-tag" style="background:rgba(185,103,255,0.12);color:var(--neon-purple);border-color:rgba(185,103,255,0.3)">SELF-TAUGHT</div>
-        <div class="edu-school" style="color:var(--neon-purple)">Fullstack Web Development</div>
-        <div class="edu-degree">HTML · CSS · JavaScript · React · Node.js · AI Tools</div>
-        <div class="edu-meta">
-          <span class="edu-year">📅 2023 — present</span>
-        </div>
-        <p class="edu-desc">Systematically self-taught web development — from frontend fundamentals to backend architecture, leveraging AI tools to accelerate learning and increase development efficiency.</p>
-        <div class="edu-highlights">
-          <span class="edu-hl" style="color:var(--neon-purple);border-color:rgba(185,103,255,0.25)">React.js</span>
-          <span class="edu-hl" style="color:var(--neon-purple);border-color:rgba(185,103,255,0.25)">Node.js</span>
-          <span class="edu-hl" style="color:var(--neon-purple);border-color:rgba(185,103,255,0.25)">AI-Assisted Dev</span>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</section>
-
-<!-- CONTACT -->
-<section id="contact">
-  <div class="section-header">
-    <span class="section-num">05</span>
-    <h2>CONTACT</h2>
-    <div class="section-line"></div>
-  </div>
-  <div class="contact-wrapper">
-    <div>
-      <p class="contact-text">I'm looking for my first opportunity to contribute and grow alongside a great team. Whether you have a question or just want to say hi — my inbox is always open!</p>
-      <div class="contact-links">
-        <a href="mailto:kdc.1110639@gmail.com" class="contact-link">
-          <div class="contact-link-icon">✉</div>
-          <span>kdc.1110639@gmail.com</span>
-        </a>
-        <div>
-          <a href="https://github.com/NrocneK" target="_blank" class="contact-link purple-link">
-            <div class="contact-link-icon purple-icon">GH</div>
-            <span>github.com/NrocneK</span>
-          </a>
-          <p class="github-note">// currently learning Git — more projects coming soon!</p>
-        </div>
-      </div>
-    </div>
-    <div class="contact-form">
-      <div class="form-group">
-        <label class="form-label">// YOUR NAME</label>
-        <input type="text" class="form-input" placeholder="John Doe">
-      </div>
-      <div class="form-group">
-        <label class="form-label">// EMAIL</label>
-        <input type="email" class="form-input" placeholder="hello@email.com">
-      </div>
-      <div class="form-group">
-        <label class="form-label">// MESSAGE</label>
-        <textarea class="form-input" placeholder="Hi Nhut! I'd like to..."></textarea>
-      </div>
-      <button class="btn-primary" id="sendBtn">SEND MESSAGE →</button>
-    </div>
-  </div>
-</section>
-
-<footer>
-  <p>DESIGNED &amp; BUILT BY <span>NGO MINH NHUT</span> — 2025</p>
-  <p class="footer-sub">// html · css · javascript · ai-assisted</p>
-</footer>
-
-<script src="script.js"></script>
-</body>
-</html>
