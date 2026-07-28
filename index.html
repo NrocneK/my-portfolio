@@ -82,12 +82,17 @@
     </div>
     <div class="about-grid">
       <div class="about-text">
-        <p>Xin chào! Tôi là <strong class="name-cyan">Ngô Minh Nhựt</strong> — một Fullstack Developer đang trong hành
-          trình xây dựng những sản phẩm web thực sự hữu ích, từ giao diện người dùng đến kiến trúc backend.</p>
-        <p>Điểm khác biệt của tôi là khả năng khai thác <span class="highlight-ai">AI TOOLS</span> để tăng tốc phát
-          triển, debug thông minh hơn và giải quyết vấn đề hiệu quả — một kỹ năng thiết yếu trong thời đại lập trình
-          hiện đại.</p>
-        <p>Tôi tin vào việc học qua thực hành. Mỗi dự án là một bài học, mỗi bug là một cơ hội để trở nên tốt hơn.</p>
+        <p>Tôi là <strong class="name-cyan">Ngô Minh Nhựt</strong> — Kỹ sư Điện tử tốt nghiệp Bách Khoa TP.HCM, hiện
+          đang đảm nhiệm vai trò quản lý kho vận tại hệ thống Nhà sách Phương Nam, đồng thời tự học lập trình để chuyển
+          ngành sang Fullstack Development.</p>
+        <p>Hành trình của tôi không bắt đầu từ một khóa học — mà bắt đầu từ <strong style="color:var(--neon-cyan)">một
+            vấn đề thực tế</strong>. Sau 2 năm quản lý kho, tôi nhận ra quy trình xuất nhập kho thủ công bằng Excel vừa
+          chậm, vừa dễ sai. Thay vì chờ đợi, tôi tự xây dựng <strong style="color:var(--neon-cyan)">WMS Pro</strong> —
+          hệ thống quản lý kho hoàn chỉnh phục vụ trực tiếp nghiệp vụ thực tế, từ quản lý tồn kho đa kho đến in phiếu
+          xuất hàng PDF.</p>
+        <p>Đó là lý do tôi không chỉ biết <em>viết code</em> — tôi còn hiểu <em>sản phẩm cần giải quyết vấn đề gì</em>.
+          Kết hợp với khả năng khai thác <span class="highlight-ai">AI TOOLS</span> để phát triển nhanh hơn, tôi tìm
+          kiếm môi trường có thể đóng góp giá trị thực ngay từ ngày đầu.</p>
       </div>
       <div class="stat-grid">
         <div class="stat-card">
@@ -246,50 +251,77 @@
     </div>
     <div class="projects-grid">
 
+      <!-- WMS PRO — FEATURED -->
       <div class="project-card featured">
         <div>
-          <span class="project-tag">FEATURED PROJECT</span>
-          <div class="project-title">E-COMMERCE WEBSITE</div>
-          <p class="project-desc">Trang web bán hàng với giao diện người dùng hiện đại, hiển thị sản phẩm, giỏ hàng và
-            luồng mua hàng hoàn chỉnh. Xây dựng với HTML/CSS/JavaScript thuần.</p>
+          <span class="project-tag">DỰ ÁN MỚI NHẤT</span>
+          <div class="project-title">WMS PRO — HỆ THỐNG QUẢN LÝ KHO VẬN</div>
+          <p class="project-desc">Phần mềm quản lý kho chuyên nghiệp được xây dựng phục vụ nghiệp vụ thực tế của ngành
+            sách &amp; xuất bản. Hỗ trợ quản lý tồn kho đa kho hàng, nhập/xuất kho thông qua file Excel, soạn phiếu xuất
+            hàng và in phiếu PDF, phân quyền chi tiết theo vai trò &amp; kho, nhật ký thao tác đầy đủ. Đã deploy thực
+            tế: Frontend trên Vercel, Backend trên Render, Database Aiven MySQL.</p>
           <div class="tech-tags">
-            <span class="tech-tag">HTML</span>
-            <span class="tech-tag">CSS</span>
-            <span class="tech-tag">JAVASCRIPT</span>
+            <span class="tech-tag">REACT 19</span>
+            <span class="tech-tag">VITE</span>
+            <span class="tech-tag">TAILWIND V4</span>
+            <span class="tech-tag">NODE.JS</span>
+            <span class="tech-tag">EXPRESS</span>
+            <span class="tech-tag">MYSQL</span>
+            <span class="tech-tag">JWT</span>
+            <span class="tech-tag">jsPDF</span>
+            <span class="tech-tag">SheetJS</span>
           </div>
-          <div class="project-note">// dự án thực hành cá nhân</div>
+          <div class="project-links">
+            <a href="https://github.com/NrocneK/wms-pro-frontend" target="_blank" class="project-link-btn">⌥
+              Frontend</a>
+            <a href="https://github.com/NrocneK/wms-pro-backend" target="_blank" class="project-link-btn">⌥ Backend</a>
+          </div>
         </div>
         <div class="project-visual">
           <div class="code-rain" id="codeRain"></div>
-          <span class="visual-label">[ SHOP.SYS ]</span>
+          <span class="visual-label">[ WMS.PRO ]</span>
         </div>
       </div>
 
+      <!-- BAGSTORE -->
       <div class="project-card">
         <span class="project-tag pink">FULLSTACK</span>
-        <div class="project-title">QUẢN LÝ NHÂN SỰ</div>
-        <p class="project-desc">Ứng dụng quản lý nhân sự với chức năng thêm, sửa, xóa, tìm kiếm nhân viên. Giao diện
-          bảng dữ liệu tương tác, xử lý logic phân loại và lọc.</p>
+        <div class="project-title">BAGSTORE — NỀN TẢNG BÁN TÚI XÁCH</div>
+        <p class="project-desc">Hệ thống thương mại điện tử hoàn chỉnh (V10) chuyên bán túi xách &amp; balo. Tích hợp
+          xác thực JWT, giỏ hàng hybrid (guest + đăng nhập), thanh toán MoMo &amp; VietQR, admin dashboard quản lý đơn
+          hàng, blog, tra cứu đơn hàng công khai. Kiến trúc gồm 13 bảng MySQL và hơn 45 REST API endpoints.</p>
         <div class="tech-tags">
-          <span class="tech-tag pink">REACT</span>
+          <span class="tech-tag pink">REACT 18</span>
           <span class="tech-tag pink">NODE.JS</span>
-          <span class="tech-tag pink">JAVASCRIPT</span>
+          <span class="tech-tag pink">MYSQL</span>
+          <span class="tech-tag pink">JWT</span>
+          <span class="tech-tag pink">MOMO</span>
+          <span class="tech-tag pink">VIETQR</span>
         </div>
-        <div class="project-note pink-note">// dự án thực hành cá nhân</div>
+        <div class="project-links">
+          <a href="https://github.com/NrocneK/my-shop" target="_blank" class="project-link-btn pink-link">⌥ GitHub</a>
+        </div>
       </div>
 
+      <!-- HRMS -->
       <div class="project-card">
-        <span class="project-tag purple">WEB APP</span>
-        <div class="project-title">CALCULATOR APP</div>
-        <p class="project-desc">Web app máy tính với giao diện tương tác, hỗ trợ các phép tính cơ bản và nâng cao. Chú
-          trọng vào UX mượt mà và xử lý edge cases.</p>
+        <span class="project-tag purple">FULLSTACK</span>
+        <div class="project-title">HRMS — QUẢN LÝ NHÂN SỰ</div>
+        <p class="project-desc">Hệ thống quản lý nhân sự xây dựng bằng Next.js 14 App Router. Tính năng chấm công
+          check-in/out theo thời gian thực, quản lý phòng ban, hồ sơ cá nhân nhân viên, phân quyền 3 cấp (Admin / HR /
+          Nhân viên). Sử dụng Prisma ORM, NextAuth.js. Deploy trên Vercel + PlanetScale MySQL.</p>
         <div class="tech-tags">
-          <span class="tech-tag purple">JAVASCRIPT</span>
-          <span class="tech-tag purple">HTML</span>
-          <span class="tech-tag purple">CSS</span>
+          <span class="tech-tag purple">NEXT.JS 14</span>
+          <span class="tech-tag purple">PRISMA</span>
+          <span class="tech-tag purple">MYSQL</span>
+          <span class="tech-tag purple">TAILWIND</span>
+          <span class="tech-tag purple">NEXTAUTH</span>
         </div>
-        <div class="project-note purple-note">// dự án thực hành cá nhân</div>
+        <div class="project-links">
+          <a href="https://github.com/NrocneK/my-hrms" target="_blank" class="project-link-btn purple-link">⌥ GitHub</a>
+        </div>
       </div>
+
 
     </div>
   </section>
