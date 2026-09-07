@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ngô Minh Nhựt — Fullstack Web Developer</title>
+  <link rel="stylesheet" href="shared.css">
+  <link rel="stylesheet" href="story.css">
+</head>
+
+<body>
+
+  <header class="global-bar">
+    <div class="brand">Ngô Minh Nhựt <span class="mono">/ dev</span></div>
+    <div class="controls">
+      <a class="toggle-btn" href="./dashboard.html" data-i18n="ctrl.dashboard">Xem bản Dashboard</a>
+      <button class="toggle-btn" id="langToggle">VI / EN</button>
+      <button class="toggle-btn" id="themeToggle">
+        <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4">
+          </path>
+        </svg>
+        <span id="themeLabel">Dark</span>
+      </button>
+    </div>
+  </header>
+
+  <div class="page-dots" id="pageDots"></div>
+
+  <div class="story-scroller" id="storyScroller">
+
+    <section class="story-page story-hero" id="page-hero">
+      <div class="story-hero-text play" id="storyHeroText">
+        <span class="s-line" data-i18n="story.hero.l1">Xin chào,</span>
+        <span class="s-line" data-i18n="story.hero.l2">tôi là Ngô Minh Nhựt.</span>
+      </div>
+      <p class="story-role reveal" data-i18n="story.hero.role">Lập trình viên Fullstack — TP. Hồ Chí Minh</p>
+      <div class="scroll-cue reveal" data-i18n="story.hero.scroll">Cuộn xuống</div>
+    </section>
+
+    <section class="story-page" id="page-journey">
+      <h2 class="story-h2 reveal" data-i18n="story.journey.title">Hành trình</h2>
+      <div class="s-timeline">
+        <div class="s-tl-item reveal">
+          <div class="s-tl-year mono">2024</div>
+          <h3 data-i18n="story.journey.i1.title">Tốt nghiệp Điện tử Viễn thông</h3>
+          <p data-i18n="story.journey.i1.body">Tốt nghiệp Đại học Bách Khoa TP.HCM với đề tài nghiên cứu và xây dựng
+            tổng đài VoIP trên nền tảng Asterisk.</p>
+        </div>
+        <div class="s-tl-item reveal">
+          <div class="s-tl-year mono">2024 — nay</div>
+          <h3 data-i18n="story.journey.i2.title">Quản lý kho vận, tự học lập trình song song</h3>
+          <p data-i18n="story.journey.i2.body">Đảm nhiệm vai trò Quản lý kho vận tại Phương Nam Retail, phụ trách một
+            đội ngũ 5 người — trong lúc tự học để chuyển hướng hẳn sang lập trình web.</p>
+        </div>
+        <div class="s-tl-item reveal">
+          <div class="s-tl-year mono" data-i18n="story.journey.i3.when">Hiện tại</div>
+          <h3 data-i18n="story.journey.i3.title">Xây dựng phần mềm từ vấn đề vận hành có thật</h3>
+          <p data-i18n="story.journey.i3.body">Vận dụng hiểu biết CNTT vào công việc kho vận để hình thành và xây dựng
+            các dự án fullstack, trong đó WMS Pro là tâm đắc nhất.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="story-page" id="page-skills">
+      <h2 class="story-h2 reveal" data-i18n="story.skills.title">Kỹ năng</h2>
+      <div class="s-skills">
+        <div class="s-skill-group reveal">
+          <h4 data-i18n="skills.g1">Ngôn ngữ &amp; Framework</h4>
+          <p>HTML · CSS · JavaScript · TypeScript · React.js · Next.js · Node.js</p>
+        </div>
+        <div class="s-skill-group reveal">
+          <h4 data-i18n="skills.g2">Cơ sở dữ liệu &amp; Công cụ</h4>
+          <p>MySQL · Git &amp; GitHub</p>
+        </div>
+        <div class="s-skill-group reveal ai">
+          <h4 data-i18n="skills.g3">Hỗ trợ bởi AI</h4>
+          <p>Claude · ChatGPT · GitHub Copilot — <span data-i18n="skills.aiDesc">dùng AI hỗ trợ viết code, debug và tăng
+              tốc học công nghệ mới.</span></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="story-page story-case-page" id="page-project-wms">
+      <div class="case-num mono">01 / 04 · <span data-i18n="story.cases.title">Dự án</span></div>
+      <h3 class="case-title">WMS Pro</h3>
+      <div class="case-grid">
+        <div>
+          <h4 class="case-label" data-i18n="story.case.problem">Bài toán</h4>
+          <p data-i18n="story.wms.problem">Tại kho hàng nơi tôi quản lý, quy trình nhập – xuất – kiểm kê phần lớn xử lý
+            thủ công, gây mất thời gian và dễ sai sót khi làm việc với một đội 5 người.</p>
+        </div>
+        <div>
+          <h4 class="case-label" data-i18n="story.case.solution">Giải pháp</h4>
+          <p data-i18n="story.wms.solution">Tự thiết kế và xây dựng WMS Pro — hệ thống quản lý kho vận fullstack (React,
+            Node.js, MySQL), tách riêng backend và frontend, số hoá các bước nhập, xuất và kiểm kê.</p>
+        </div>
+        <div>
+          <h4 class="case-label" data-i18n="story.case.result">Kết quả</h4>
+          <p data-i18n="story.wms.result">Rút gọn đáng kể quy trình và thời gian thao tác so với cách làm thủ công trước
+            đó — dự án tâm đắc nhất vì sinh ra từ vấn đề thật, không phải bài tập lý thuyết.</p>
+        </div>
+      </div>
+      <div class="case-links">
+        <a href="https://github.com/NrocneK/wms-pro-backend" target="_blank" rel="noopener"
+          data-i18n="projects.link.backend">Backend</a>
+        <a href="https://github.com/NrocneK/wms-pro-frontend" target="_blank" rel="noopener"
+          data-i18n="projects.link.frontend">Frontend</a>
+      </div>
+    </section>
+
+    <section class="story-page story-case-page" id="page-project-shop">
+      <div class="case-num mono">02 / 04 · <span data-i18n="story.cases.title">Dự án</span></div>
+      <h3 class="case-title">My Shop</h3>
+      <div class="case-grid">
+        <div>
+          <h4 class="case-label" data-i18n="story.case.problem">Bài toán</h4>
+          <p data-i18n="story.shop.problem">Cần thực hành xây dựng một luồng thương mại điện tử hoàn chỉnh, từ trưng bày
+            sản phẩm đến giỏ hàng.</p>
+        </div>
+        <div>
+          <h4 class="case-label" data-i18n="story.case.solution">Giải pháp</h4>
+          <p data-i18n="story.shop.solution">Xây dựng website bán túi xách &amp; balo với danh mục sản phẩm, giỏ hàng và
+            quản lý đơn hàng.</p>
+        </div>
+        <div>
+          <h4 class="case-label" data-i18n="story.case.result">Kết quả</h4>
+          <p data-i18n="story.shop.result">Nắm vững luồng e-commerce fullstack, từ giao diện React đến cơ sở dữ liệu
+            MySQL.</p>
+        </div>
+      </div>
+      <div class="case-links">
+        <a href="https://github.com/NrocneK/my-shop" target="_blank" rel="noopener"
+          data-i18n="projects.link.repo">Repo</a>
+      </div>
+    </section>
+
+    <section class="story-page story-case-page" id="page-project-hrms">
+      <div class="case-num mono">03 / 04 · <span data-i18n="story.cases.title">Dự án</span></div>
+      <h3 class="case-title">My HRMS</h3>
+      <div class="case-grid">
+        <div>
+          <h4 class="case-label" data-i18n="story.case.problem">Bài toán</h4>
+          <p data-i18n="story.hrms.problem">Doanh nghiệp nhỏ cần một công cụ tập trung để theo dõi thông tin nhân sự,
+            thay vì quản lý rời rạc trên bảng tính.</p>
+        </div>
+        <div>
+          <h4 class="case-label" data-i18n="story.case.solution">Giải pháp</h4>
+          <p data-i18n="story.hrms.solution">Xây dựng hệ thống quản lý nhân sự (HRMS) hỗ trợ lưu trữ và tra cứu hồ sơ
+            nhân viên.</p>
+        </div>
+        <div>
+          <h4 class="case-label" data-i18n="story.case.result">Kết quả</h4>
+          <p data-i18n="story.hrms.result">Một hệ thống CRUD hoàn chỉnh, minh hoạ khả năng thiết kế cơ sở dữ liệu quan
+            hệ.</p>
+        </div>
+      </div>
+      <div class="case-links">
+        <a href="https://github.com/NrocneK/my-hrms" target="_blank" rel="noopener"
+          data-i18n="projects.link.repo">Repo</a>
+      </div>
+    </section>
+
+    <section class="story-page story-case-page" id="page-project-communix">
+      <div class="case-num mono">04 / 04 · <span data-i18n="story.cases.title">Dự án</span></div>
+      <h3 class="case-title">Communix</h3>
+      <div class="case-grid">
+        <div>
+          <h4 class="case-label" data-i18n="story.case.problem">Bài toán</h4>
+          <p data-i18n="story.communix.problem">Muốn thử sức với bài toán giao tiếp thời gian thực — khác hẳn các hệ
+            thống quản lý CRUD thông thường.</p>
+        </div>
+        <div>
+          <h4 class="case-label" data-i18n="story.case.solution">Giải pháp</h4>
+          <p data-i18n="story.communix.solution">Xây dựng Communix — ứng dụng chat, tách riêng backend và frontend, xử
+            lý tin nhắn theo thời gian thực.</p>
+        </div>
+        <div>
+          <h4 class="case-label" data-i18n="story.case.result">Kết quả</h4>
+          <p data-i18n="story.communix.result">Mở rộng kỹ năng sang xử lý dữ liệu thời gian thực, ngoài phạm vi CRUD
+            truyền thống.</p>
+        </div>
+      </div>
+      <div class="case-links">
+        <a href="https://github.com/NrocneK/communix-backend" target="_blank" rel="noopener"
+          data-i18n="projects.link.backend">Backend</a>
+        <a href="https://github.com/NrocneK/communix-frontend" target="_blank" rel="noopener"
+          data-i18n="projects.link.frontend">Frontend</a>
+      </div>
+    </section>
+
+    <section class="story-page story-contact" id="page-contact">
+      <h2 class="story-h2 reveal" data-i18n="story.contact.title">Liên hệ</h2>
+      <p class="reveal story-contact-lede" data-i18n="story.contact.lede">Đang tìm cơ hội bắt đầu sự nghiệp lập trình
+        viên fullstack.</p>
+      <div class="story-contact-links reveal">
+        <a href="mailto:kdc.1110639@gmail.com">kdc.1110639@gmail.com</a>
+        <a href="tel:+84938842993">+84 938 842 993</a>
+        <a href="https://github.com/NrocneK" target="_blank" rel="noopener">github.com/NrocneK</a>
+      </div>
+      <a href="./CV_NgoMinhNhut_VI.docx" download class="btn btn-primary reveal cv-download-link"
+        data-i18n="hero.cta1">Tải CV</a>
+      <footer class="story-footer">
+        <div>Ngô Minh Nhựt — <span data-i18n="footer.role">Fullstack Web Developer</span></div>
+        <div class="mono">Ho Chi Minh City, VN</div>
+      </footer>
+    </section>
+
+  </div>
+
+  <script src="shared.js"></script>
+  <script src="story.js"></script>
+</body>
+
+</html>
