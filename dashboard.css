@@ -728,25 +728,18 @@ body.expanded-mode .close-expand-btn {
   display: flex;
 }
 
-/* cards stay in the grid DOM-wise; expanded-mode just repositions them with position:fixed
-   so JS can FLIP-animate the transform between their grid rect and this rect */
+/* cards stay in the grid DOM-wise; expanded-mode repositions them with position:fixed
+   using JS-computed pixel coordinates confined to the original grid's own bounding box
+   (so the whole interaction stays between the header and footer, never spilling past
+   them), and JS FLIP-animates the transform between their grid rect and this rect */
 body.expanded-mode .card {
-  position: fixed;
   margin: 0;
 }
 
 body.expanded-mode .card.is-active {
-  top: 50%;
-  left: 50%;
-  right: auto;
-  bottom: auto;
-  transform: translate(-50%, -50%);
-  width: min(820px, 94vw);
-  max-height: calc(100vh - 60px);
-  height: auto;
   z-index: 60;
   overflow-y: auto;
-  padding: 36px 42px;
+  padding: 32px 38px;
   justify-content: flex-start;
 }
 
@@ -778,12 +771,12 @@ body.expanded-mode .card.is-active .skills-summary {
 
 body.expanded-mode .card.is-active .activity-chart {
   flex: none;
-  height: 240px;
+  height: 220px;
 }
 
 body.expanded-mode .card.is-active .map-frame {
   flex: none;
-  height: 220px;
+  height: 200px;
 }
 
 body.expanded-mode .card.is-active .card-decor {
@@ -791,12 +784,9 @@ body.expanded-mode .card.is-active .card-decor {
 }
 
 body.expanded-mode .card:not(.is-active) {
-  top: auto;
-  bottom: 20px;
-  height: 96px;
   z-index: 20;
   cursor: pointer;
-  padding: 14px 16px;
+  padding: 10px 14px;
   justify-content: center;
 }
 
@@ -806,7 +796,7 @@ body.expanded-mode .card:not(.is-active)>*:not(.card-title) {
 
 body.expanded-mode .card:not(.is-active) .card-title {
   margin-bottom: 0;
-  font-size: 0.7rem;
+  font-size: 0.66rem;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -840,6 +830,7 @@ body:not(.expanded-mode) .card-details {
     display: none;
   }
 }
+
 
 /* ---------- BASE: locked viewport, no page scrollbar, at ANY screen size ---------- */
 html,

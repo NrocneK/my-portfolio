@@ -171,15 +171,38 @@ function withFlip(mutate) {
   });
 }
 
-function layoutCollapsedRow(activeCard) {
-  const others = cardsInOrder.filter(c => c !== activeCard);
-  const margin = 20, gap = 12;
-  const totalW = window.innerWidth - margin * 2 - gap * (others.length - 1);
-  const itemW = totalW / others.length;
+/* Capture the grid's own bounding box (the area between header and footer) BEFORE
+   we touch any card's position, so the expanded layout always stays within it —
+   this is the "khung đỏ" reference frame: header/footer never get covered, and
+   nothing spills past where the grid itself already sits. */
+function layoutExpanded(activeKey) {
+  const box = bento.getBoundingClientRect();
+  const active = cardsInOrder.find(c => c.dataset.key === activeKey);
+  const others = cardsInOrder.filter(c => c !== active);
+
+  const stripH = 84, gap = 10;
+
+  Object.assign(active.style, {
+    position: 'fixed',
+    top: box.top + 'px',
+    left: box.left + 'px',
+    width: box.width + 'px',
+    height: (box.height - stripH - gap) + 'px',
+    right: 'auto', bottom: 'auto', transform: 'none', maxHeight: 'none',
+  });
+
+  const stripTop = box.top + box.height - stripH;
+  const n = others.length;
+  const itemW = (box.width - gap * (n - 1)) / n;
   others.forEach((c, i) => {
-    c.style.left = (margin + i * (itemW + gap)) + 'px';
-    c.style.width = itemW + 'px';
-    c.style.right = 'auto';
+    Object.assign(c.style, {
+      position: 'fixed',
+      top: stripTop + 'px',
+      left: (box.left + i * (itemW + gap)) + 'px',
+      width: itemW + 'px',
+      height: stripH + 'px',
+      right: 'auto', bottom: 'auto', transform: 'none',
+    });
   });
 }
 
@@ -187,21 +210,24 @@ function expandCard(key) {
   if (!isDesktop()) return;
   const active = cardsInOrder.find(c => c.dataset.key === key);
   if (!active) return;
+  currentExpandedKey = key;
   withFlip(() => {
     document.body.classList.add('expanded-mode');
     cardsInOrder.forEach(c => c.classList.toggle('is-active', c === active));
-    active.style.left = ''; active.style.width = ''; active.style.right = '';
-    layoutCollapsedRow(active);
+    layoutExpanded(key);
   });
 }
 
 function collapseExpand() {
   if (!document.body.classList.contains('expanded-mode')) return;
+  currentExpandedKey = null;
   withFlip(() => {
     document.body.classList.remove('expanded-mode');
     cardsInOrder.forEach(c => {
       c.classList.remove('is-active');
-      c.style.left = ''; c.style.width = ''; c.style.right = ''; c.style.top = ''; c.style.bottom = '';
+      ['position', 'top', 'left', 'right', 'bottom', 'width', 'height', 'transform', 'maxHeight'].forEach(p => {
+        c.style[p] = '';
+      });
     });
   });
 }
@@ -209,9 +235,15 @@ function collapseExpand() {
 closeExpandBtn.addEventListener('click', collapseExpand);
 document.addEventListener('keydown', (e) => { if (e.key === 'Escape') collapseExpand(); });
 
-// if the viewport crosses from desktop to mobile while expanded, drop back to the normal layout
+// if the viewport crosses from desktop to mobile while expanded, drop back to the normal layout;
+// otherwise, re-run the layout (no FLIP) so it stays glued to the grid box on resize
+let currentExpandedKey = null;
 window.addEventListener('resize', () => {
-  if (!isDesktop() && document.body.classList.contains('expanded-mode')) collapseExpand();
+  if (!isDesktop() && document.body.classList.contains('expanded-mode')) {
+    collapseExpand();
+  } else if (document.body.classList.contains('expanded-mode') && currentExpandedKey) {
+    layoutExpanded(currentExpandedKey);
+  }
 });
 
 cards.forEach(card => {
