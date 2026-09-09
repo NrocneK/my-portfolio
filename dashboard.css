@@ -444,9 +444,8 @@ body {
 }
 
 .activity-chart img {
-  width: auto;
   height: 100%;
-  max-width: 100%;
+  width: 100%;
   object-fit: contain;
 }
 
@@ -760,23 +759,8 @@ body.expanded-mode .card.is-active .proj-list {
   display: none;
 }
 
-body.expanded-mode .card.is-active .connect-list {
-  flex: none;
-  justify-content: flex-start;
-}
-
 body.expanded-mode .card.is-active .skills-summary {
   display: none;
-}
-
-body.expanded-mode .card.is-active .activity-chart {
-  flex: none;
-  height: 220px;
-}
-
-body.expanded-mode .card.is-active .map-frame {
-  flex: none;
-  height: 200px;
 }
 
 body.expanded-mode .card.is-active .card-decor {
