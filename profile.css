@@ -1,0 +1,501 @@
+/* ================= PROFILE / SHOWCASE PAGE ================= */
+.profile-body {
+  overflow-x: hidden;
+}
+
+.profile-body .mono-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.76rem;
+  color: var(--teal);
+  letter-spacing: 0.01em;
+  display: inline-block;
+  margin-bottom: 10px;
+}
+
+.dotgrid {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: radial-gradient(var(--line-strong) 1px, transparent 1px);
+  background-size: 22px 22px;
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+}
+
+.pf-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 32px;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+section.pf-section, .pf-hero, .pf-contact-section {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 90px 32px;
+}
+
+/* ---------- floating dock ---------- */
+.pf-dock {
+  position: fixed;
+  left: 50%;
+  bottom: 22px;
+  transform: translateX(-50%);
+  z-index: 80;
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 999px;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.14);
+}
+
+.pf-dock-btn {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background var(--t-fast), color var(--t-fast), transform var(--t-fast);
+}
+
+.pf-dock-btn svg { width: 19px; height: 19px; }
+
+.pf-dock-btn:hover { transform: translateY(-3px); color: var(--ink); }
+
+.pf-dock-btn.active {
+  background: var(--teal);
+  color: #06231F;
+}
+
+/* ---------- hero ---------- */
+.pf-hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 40px;
+  align-items: center;
+  min-height: 86vh;
+  padding-top: 60px;
+}
+
+.pf-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.78rem;
+  color: var(--muted);
+  border: 1px solid var(--line-strong);
+  padding: 6px 14px;
+  border-radius: 999px;
+  margin-bottom: 22px;
+}
+
+.pf-dot-live {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--teal);
+  animation: pulseDot 2s ease-in-out infinite;
+}
+
+.pf-hero-title {
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  line-height: 1.12;
+  margin-bottom: 20px;
+}
+
+.pf-gradient-text {
+  background: linear-gradient(100deg, var(--teal), var(--amber));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.pf-hero-tag {
+  color: var(--muted);
+  font-size: 1.05rem;
+  max-width: 52ch;
+  margin-bottom: 28px;
+}
+
+.pf-hero-cta { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 26px; }
+
+.pf-social { display: flex; gap: 14px; }
+.pf-social a {
+  width: 38px; height: 38px; border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted);
+  transition: border-color var(--t-fast), color var(--t-fast);
+}
+.pf-social a:hover { border-color: var(--teal); color: var(--ink); }
+.pf-social img { width: 17px; height: 17px; opacity: 0.75; }
+.pf-social svg { width: 17px; height: 17px; }
+
+/* ---------- ID badge ---------- */
+.pf-badge-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  perspective: 900px;
+}
+
+.pf-lanyard {
+  width: 3px;
+  height: 46px;
+  background: linear-gradient(var(--ink), var(--muted));
+  border-radius: 2px;
+}
+
+.pf-idcard {
+  width: 100%;
+  max-width: 260px;
+  background: var(--surface);
+  border: 1px solid var(--line-strong);
+  border-radius: 16px;
+  box-shadow: 0 24px 48px rgba(0,0,0,0.16);
+  overflow: hidden;
+  cursor: grab;
+  touch-action: none;
+  transform-origin: top center;
+  will-change: transform;
+  user-select: none;
+}
+
+.pf-idcard.dragging { cursor: grabbing; transition: none !important; }
+
+.pf-idcard-top {
+  height: 130px;
+  background: linear-gradient(135deg, var(--teal-dim), var(--amber-dim));
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 0;
+}
+
+.pf-idcard-top img {
+  width: 84px; height: 84px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--surface);
+  margin-bottom: -34px;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.2);
+}
+
+.pf-idcard-body { padding: 42px 20px 18px; text-align: center; }
+.pf-idcard-body h3 { font-family: 'Space Grotesk', sans-serif; font-size: 1.05rem; margin-bottom: 2px; }
+.pf-idcard-role { color: var(--muted); font-size: 0.8rem; margin-bottom: 16px; }
+
+.pf-idcard-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  text-align: left;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 0;
+  margin-bottom: 14px;
+}
+
+.pf-idcard-grid strong { display: block; font-size: 0.82rem; margin-top: 2px; }
+.pf-status-ok { color: var(--teal); }
+
+.pf-idcard-barcode {
+  height: 26px;
+  background: repeating-linear-gradient(90deg, var(--ink) 0 2px, transparent 2px 5px, var(--ink) 5px 6px, transparent 6px 9px);
+  opacity: 0.7;
+  margin-bottom: 8px;
+}
+
+.pf-idcard-foot {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--muted);
+}
+
+.pf-drag-hint {
+  margin-top: 18px;
+  font-size: 0.76rem;
+  color: var(--muted);
+}
+
+/* ---------- tech marquee ---------- */
+.pf-marquee-wrap {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  padding: 22px 0;
+  overflow: hidden;
+}
+
+.pf-marquee { width: 100%; overflow: hidden; }
+
+.pf-marquee-track {
+  display: flex;
+  gap: 56px;
+  width: max-content;
+  animation: pf-scroll 28s linear infinite;
+}
+
+.pf-marquee-track img { height: 24px; width: auto; opacity: 0.6; filter: grayscale(1); }
+
+@keyframes pf-scroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+
+/* ---------- about ---------- */
+.pf-about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+  align-items: center;
+}
+
+.pf-about-text h2 { font-size: 2rem; margin: 10px 0 16px; }
+.pf-about-text p { color: var(--muted); max-width: 48ch; }
+
+.pf-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.pf-stat {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 22px 18px;
+}
+
+.pf-stat-num {
+  display: block;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 2.1rem;
+  font-weight: 600;
+  background: linear-gradient(100deg, var(--teal), var(--amber));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.pf-stat-label { color: var(--muted); font-size: 0.82rem; }
+
+/* ---------- section head ---------- */
+.pf-section-head { max-width: 60ch; margin-bottom: 40px; }
+.pf-section-head h2 { font-size: 1.9rem; margin: 10px 0 10px; }
+.pf-section-head p { color: var(--muted); }
+
+/* ---------- spotlight cards ---------- */
+.pf-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.pf-card {
+  position: relative;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 26px;
+  overflow: hidden;
+}
+
+.pf-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(220px circle at var(--mx, 50%) var(--my, 50%), var(--teal-dim), transparent 70%);
+  opacity: 0;
+  transition: opacity var(--t-fast);
+  pointer-events: none;
+}
+
+.pf-card:hover::before { opacity: 0.55; }
+
+.pf-card-icon {
+  width: 42px; height: 42px;
+  border-radius: 10px;
+  border: 1px solid var(--line-strong);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--teal);
+  margin-bottom: 16px;
+  position: relative;
+}
+
+.pf-card h3 { font-size: 1.05rem; margin-bottom: 8px; position: relative; }
+.pf-card p { color: var(--muted); font-size: 0.9rem; position: relative; }
+
+/* ---------- projects grid ---------- */
+.pf-projgrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.pf-projcard {
+  position: relative;
+  display: block;
+  border-radius: 16px;
+  padding: 26px;
+  min-height: 150px;
+  background: linear-gradient(var(--pf-grad));
+  color: #fff;
+  overflow: hidden;
+  transition: transform var(--t-fast);
+}
+
+.pf-projcard:hover { transform: translateY(-3px); }
+
+.pf-projcard-body h3 { font-size: 1.15rem; margin-bottom: 6px; }
+.pf-projcard-body p { font-size: 0.86rem; opacity: 0.82; max-width: 34ch; }
+
+.pf-projcard-arrow {
+  position: absolute;
+  right: 20px; bottom: 20px;
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.15);
+  display: flex; align-items: center; justify-content: center;
+}
+
+/* ---------- timeline ---------- */
+.pf-timeline { position: relative; padding-left: 26px; }
+
+.pf-timeline-line {
+  position: absolute;
+  left: 5px; top: 6px; bottom: 6px;
+  width: 2px;
+  background: var(--line-strong);
+}
+
+.pf-timeline-glow {
+  position: absolute;
+  left: -3px; top: 0;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--teal);
+  box-shadow: 0 0 14px var(--teal);
+  transition: top 0.15s linear;
+}
+
+.pf-tl-item { position: relative; padding-bottom: 34px; }
+
+.pf-tl-item::before {
+  content: "";
+  position: absolute;
+  left: -25px; top: 4px;
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--surface);
+  border: 2px solid var(--line-strong);
+}
+
+.pf-tl-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 20px 22px;
+}
+
+.pf-tl-card h3 { font-size: 1.05rem; margin: 6px 0 8px; }
+.pf-tl-card p { color: var(--muted); font-size: 0.9rem; }
+
+/* ---------- contact ---------- */
+.pf-contact-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 50px;
+}
+
+.pf-contact-grid h2 { font-size: 1.9rem; margin: 10px 0 14px; }
+.pf-contact-grid > div > p { color: var(--muted); max-width: 42ch; margin-bottom: 24px; }
+
+.pf-contact-rows { display: flex; flex-direction: column; gap: 12px; }
+
+.pf-contact-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  font-size: 0.92rem;
+  color: var(--ink);
+  transition: border-color var(--t-fast), background var(--t-fast);
+}
+
+.pf-contact-row:hover { border-color: var(--teal); background: var(--surface-2); }
+.pf-contact-row svg { width: 18px; height: 18px; flex: none; color: var(--muted); }
+
+.pf-contact-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  padding: 24px;
+}
+
+.pf-contact-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.82rem;
+  color: var(--muted);
+}
+
+.pf-contact-form input, .pf-contact-form textarea {
+  font-family: 'Inter', sans-serif;
+  font-size: 0.92rem;
+  padding: 10px 12px;
+  border-radius: 9px;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  color: var(--ink);
+  resize: vertical;
+}
+
+.pf-contact-form input:focus, .pf-contact-form textarea:focus {
+  outline: none;
+  border-color: var(--teal);
+}
+
+.pf-footer {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 60px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+/* ---------- reveal on scroll ---------- */
+.reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s var(--ease), transform .6s var(--ease); }
+.reveal.in-view { opacity: 1; transform: translateY(0); }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .pf-marquee-track { animation: none; }
+  .pf-dot-live { animation: none; }
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 860px) {
+  .pf-hero { grid-template-columns: 1fr; min-height: auto; padding-top: 30px; gap: 50px; }
+  .pf-about-grid, .pf-contact-grid { grid-template-columns: 1fr; }
+  .pf-cards, .pf-projgrid { grid-template-columns: 1fr; }
+  .pf-stats { grid-template-columns: 1fr 1fr; }
+  section.pf-section, .pf-hero, .pf-contact-section { padding: 60px 20px; }
+  .pf-dock { bottom: 14px; }
+}
