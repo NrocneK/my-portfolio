@@ -1,0 +1,341 @@
+/* ================= TERMINAL / OPS-CONSOLE PAGE ================= */
+html,
+body {
+    height: 100%;
+    overflow: hidden;
+}
+
+.term-app {
+    height: 100vh;
+    height: 100dvh;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+/* faint scanline texture — the one signature visual flourish of this page */
+.term-app::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 5;
+    background: repeating-linear-gradient(to bottom,
+            rgba(233, 237, 233, 0.025) 0px,
+            rgba(233, 237, 233, 0.025) 1px,
+            transparent 1px,
+            transparent 3px);
+    mix-blend-mode: overlay;
+}
+
+html[data-theme="light"] .term-app::before {
+    background: repeating-linear-gradient(to bottom,
+            rgba(22, 30, 25, 0.02) 0px,
+            rgba(22, 30, 25, 0.02) 1px,
+            transparent 1px,
+            transparent 3px);
+}
+
+/* ---------- top bar ---------- */
+.term-topbar {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 14px 22px;
+    border-bottom: 1px solid var(--line);
+    flex-wrap: wrap;
+    animation: fadeUp .5s var(--ease) both;
+}
+
+.term-title {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    font-size: 0.86rem;
+    white-space: nowrap;
+}
+
+.term-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--teal);
+    animation: pulseDot 2.2s ease-in-out infinite;
+    flex: none;
+}
+
+.term-title .dim {
+    color: var(--muted);
+}
+
+.term-status {
+    color: var(--muted);
+    font-size: 0.76rem;
+    letter-spacing: 0.02em;
+}
+
+.term-topbar .controls {
+    margin-left: auto;
+    flex-wrap: wrap;
+}
+
+/* ---------- output pane ---------- */
+.term-output {
+    flex: 1;
+    min-height: 0;
+    overflow-y: auto;
+    padding: 22px 24px 10px;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.term-line {
+    white-space: pre-wrap;
+    word-break: break-word;
+    margin-bottom: 2px;
+}
+
+.term-block {
+    margin-bottom: 22px;
+}
+
+.term-echo {
+    color: var(--ink);
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.term-echo .term-prompt-inline {
+    color: var(--teal);
+    flex: none;
+}
+
+.term-body-text {
+    color: var(--muted);
+}
+
+.term-heading {
+    color: var(--teal);
+    font-weight: 500;
+    margin: 2px 0 6px;
+}
+
+.term-muted {
+    color: var(--muted);
+}
+
+.term-amber {
+    color: var(--amber);
+}
+
+.term-error {
+    color: #E5695D;
+}
+
+.term-boot {
+    color: var(--muted);
+    font-size: 0.85rem;
+}
+
+.term-link {
+    color: var(--teal);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    text-decoration-color: var(--teal-dim);
+}
+
+.term-link:hover {
+    text-decoration-color: var(--teal);
+}
+
+.term-table {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    row-gap: 6px;
+    column-gap: 18px;
+    margin: 4px 0 10px;
+}
+
+.term-table dt {
+    color: var(--muted);
+    font-size: 0.82rem;
+}
+
+.term-table dd {
+    color: var(--ink);
+}
+
+.term-chiprow {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 6px 0 14px;
+}
+
+.term-tag {
+    border: 1px solid var(--line-strong);
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 0.78rem;
+    color: var(--ink);
+    background: var(--surface);
+}
+
+.term-project {
+    border: 1px solid var(--line);
+    border-left: 2px solid var(--teal-dim);
+    border-radius: 6px;
+    padding: 12px 16px;
+    margin: 8px 0;
+    background: var(--surface);
+}
+
+.term-project h3 {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.94rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 6px;
+}
+
+.term-cursor-blink {
+    display: inline-block;
+    width: 8px;
+    height: 1em;
+    background: var(--teal);
+    margin-left: 2px;
+    vertical-align: text-bottom;
+    animation: caretBlink 1s steps(1) infinite;
+}
+
+@keyframes caretBlink {
+
+    0%,
+    49% {
+        opacity: 1;
+    }
+
+    50%,
+    100% {
+        opacity: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .term-dot,
+    .term-cursor-blink {
+        animation: none;
+    }
+}
+
+/* ---------- quick command chips ---------- */
+.term-chips {
+    display: flex;
+    gap: 8px;
+    padding: 0 24px 10px;
+    overflow-x: auto;
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    scrollbar-width: thin;
+}
+
+.term-chip {
+    flex: none;
+    border: 1px solid var(--line-strong);
+    background: var(--surface);
+    color: var(--muted);
+    border-radius: 999px;
+    padding: 6px 13px;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: border-color var(--t-fast), color var(--t-fast), transform var(--t-fast);
+}
+
+.term-chip:hover {
+    border-color: var(--teal);
+    color: var(--ink);
+    transform: translateY(-1px);
+}
+
+.term-chip:active {
+    transform: scale(.95);
+}
+
+/* ---------- input row ---------- */
+.term-inputrow {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 24px 20px;
+    border-top: 1px solid var(--line);
+    max-width: 900px;
+    width: 100%;
+    margin: 0 auto;
+    box-sizing: border-box;
+}
+
+.term-prompt {
+    color: var(--teal);
+    font-size: 0.9rem;
+    white-space: nowrap;
+    flex: none;
+}
+
+.term-input {
+    flex: 1;
+    min-width: 0;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: var(--ink);
+    font-size: 0.9rem;
+    caret-color: var(--teal);
+    padding: 4px 2px;
+}
+
+.term-input:focus-visible {
+    box-shadow: none;
+}
+
+.term-inputrow:focus-within {
+    border-top-color: var(--teal-dim);
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 720px) {
+    .term-topbar {
+        padding: 12px 16px;
+        gap: 10px;
+    }
+
+    .term-status {
+        order: 3;
+        width: 100%;
+    }
+
+    .term-output {
+        padding: 16px 16px 8px;
+        font-size: 0.88rem;
+    }
+
+    .term-chips,
+    .term-inputrow {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+
+    .term-table {
+        grid-template-columns: 1fr;
+        row-gap: 2px;
+    }
+
+    .term-table dd {
+        margin-bottom: 6px;
+    }
+}

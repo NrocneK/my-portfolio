@@ -444,8 +444,9 @@ body {
 }
 
 .activity-chart img {
+  width: auto;
   height: 100%;
-  width: 100%;
+  max-width: 100%;
   object-fit: contain;
 }
 
@@ -620,6 +621,15 @@ body {
   object-fit: contain;
 }
 
+.skill-chip-icon-text {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 8.5px;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
 /* ---- project case pager (one project at a time, click the edges to switch) ---- */
 .case-pager {
   display: flex;
@@ -747,14 +757,16 @@ body.expanded-mode .card.is-active .card-details {
   animation: fadeUp .5s var(--ease) both;
 }
 
+/* paragraphs can now use the full width of the wider expanded card instead of
+   wrapping early and leaving the right side empty */
+body.expanded-mode .card.is-active .card-details p {
+  max-width: 100%;
+}
+
 body.expanded-mode .card.is-active .skills-count {
   display: none;
 }
 
-/* the front-content containers below were built with flex:1 to fill a FIXED-height
-   collapsed card. Inside the now auto-height expanded card, flex:1 has no defined
-   space to grow into and browsers can resolve that to near-zero, causing the
-   overlap/collapse bugs. Force them back to natural, content-based sizing here. */
 body.expanded-mode .card.is-active .proj-list {
   display: none;
 }
@@ -765,6 +777,42 @@ body.expanded-mode .card.is-active .skills-summary {
 
 body.expanded-mode .card.is-active .card-decor {
   display: none;
+}
+
+/* map / activity chart / contact list ARE the main visual of their card:
+   let them grow to fill all remaining height. card-details (short caption/
+   lede paragraph below them) stays its natural small size — it does NOT
+   compete for the same space. */
+body.expanded-mode .card.is-active .connect-list,
+body.expanded-mode .card.is-active .activity-chart,
+body.expanded-mode .card.is-active .map-frame {
+  flex: 1;
+  min-height: 0;
+}
+
+/* skills & projects: content is several stacked blocks, not one visual —
+   let card-details itself grow and spread its children evenly instead.
+   This must come AFTER the generic ".card-details { display:block }" rule
+   above so it wins for just these two cards. */
+body.expanded-mode .card-skills.is-active .card-details,
+body.expanded-mode .card-projects.is-active .card-details {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  justify-content: space-between;
+}
+
+body.expanded-mode .card.is-active .case-pager {
+  flex: 1;
+  min-height: 0;
+}
+
+body.expanded-mode .card.is-active .case-viewport {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  overflow-y: auto;
 }
 
 body.expanded-mode .card:not(.is-active) {

@@ -23,6 +23,7 @@
       <div class="brand">Ngô Minh Nhựt <span class="mono">/ dev</span></div>
       <div class="controls">
         <a class="toggle-btn" href="./story.html" data-i18n="ctrl.story">Xem bản Story</a>
+        <a class="toggle-btn" href="./terminal.html" data-i18n="ctrl.terminal">Xem bản Terminal</a>
         <button class="toggle-btn" id="langToggle">VI / EN</button>
         <button class="toggle-btn" id="themeToggle">
           <svg id="themeIcon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -325,45 +326,68 @@
         </div>
 
         <div class="card-details">
-          <span class="mono-label" data-i18n="skills.g1">Ngôn ngữ &amp; Framework</span>
-          <div class="modal-skill-tags">
-            <span class="skill-chip"><span class="skill-chip-icon" style="background:#E44D26"><img
-                  src="./icons/html5.svg" alt=""></span>HTML</span>
-            <span class="skill-chip"><span class="skill-chip-icon" style="background:#2965F1"><img
-                  src="./icons/css3.svg" alt=""></span>CSS</span>
-            <span class="skill-chip"><span class="skill-chip-icon" style="background:#F0DB4F"><img
-                  src="./icons/javascript.svg" alt=""></span>JavaScript</span>
-            <span class="skill-chip"><span class="skill-chip-icon" style="background:#3178C6"><img
-                  src="./icons/typescript.svg" alt=""></span>TypeScript</span>
-            <span class="skill-chip"><span class="skill-chip-icon" style="background:#101828"><img
-                  src="./icons/react.svg" alt=""></span>React.js</span>
-            <span class="skill-chip"><span class="skill-chip-icon" style="background:#000"><img src="./icons/nextjs.svg"
-                  alt=""></span>Next.js</span>
-            <span class="skill-chip"><span class="skill-chip-icon" style="background:#3C873A"><img
-                  src="./icons/nodejs.svg" alt=""></span>Node.js</span>
+          <div class="skill-group">
+            <span class="mono-label" data-i18n="skills.g1">Ngôn ngữ &amp; Framework</span>
+            <div class="modal-skill-tags">
+              <span class="skill-chip"><span class="skill-chip-icon" style="background:#E44D26"><img
+                    src="./icons/html5.svg" alt=""></span>HTML</span>
+              <span class="skill-chip"><span class="skill-chip-icon" style="background:#2965F1"><img
+                    src="./icons/css3.svg" alt=""></span>CSS</span>
+              <span class="skill-chip"><span class="skill-chip-icon" style="background:#F0DB4F"><img
+                    src="./icons/javascript.svg" alt=""></span>JavaScript</span>
+              <span class="skill-chip"><span class="skill-chip-icon" style="background:#3178C6"><img
+                    src="./icons/typescript.svg" alt=""></span>TypeScript</span>
+              <span class="skill-chip"><span class="skill-chip-icon" style="background:#101828"><img
+                    src="./icons/react.svg" alt=""></span>React.js</span>
+              <span class="skill-chip"><span class="skill-chip-icon" style="background:#000"><img
+                    src="./icons/nextjs.svg" alt=""></span>Next.js</span>
+              <span class="skill-chip"><span class="skill-chip-icon" style="background:#3C873A"><img
+                    src="./icons/nodejs.svg" alt=""></span>Node.js</span>
+            </div>
+            <p data-i18n="skills.g1Desc">Dùng xuyên suốt trong cả 4 dự án đã xây dựng — từ giao diện React/Next.js đến
+              backend Node.js.</p>
           </div>
-          <p data-i18n="skills.g1Desc">Dùng xuyên suốt trong cả 4 dự án đã xây dựng — từ giao diện React/Next.js đến
-            backend Node.js.</p>
-          <span class="mono-label" data-i18n="skills.g2">Cơ sở dữ liệu &amp; Công cụ</span>
-          <div class="modal-skill-tags">
-            <span class="skill-chip"><span class="skill-chip-icon" style="background:#00758F"><img
-                  src="./icons/mysql.svg" alt=""></span>MySQL</span>
-            <span class="skill-chip"><span class="skill-chip-icon" style="background:#F05032"><img src="./icons/git.svg"
-                  alt=""></span>Git &amp; GitHub</span>
+          <div class="skill-group">
+            <span class="mono-label" data-i18n="skills.g2">Cơ sở dữ liệu &amp; Công cụ</span>
+            <div class="modal-skill-tags">
+              <span class="skill-chip"><span class="skill-chip-icon" style="background:#00758F"><img
+                    src="./icons/mysql.svg" alt=""></span>MySQL</span>
+              <span class="skill-chip"><span class="skill-chip-icon" style="background:#F05032"><img
+                    src="./icons/git.svg" alt=""></span>Git &amp; GitHub</span>
+            </div>
+            <p data-i18n="skills.g2Desc">MySQL là lựa chọn cơ sở dữ liệu cho cả 4 dự án; Git/GitHub dùng để quản lý toàn
+              bộ mã nguồn (xem hoạt động thực tế ở mục Hoạt động GitHub).</p>
           </div>
-          <p data-i18n="skills.g2Desc">MySQL là lựa chọn cơ sở dữ liệu cho cả 4 dự án; Git/GitHub dùng để quản lý toàn
-            bộ mã nguồn (xem hoạt động thực tế ở mục Hoạt động GitHub).</p>
-          <span class="mono-label" data-i18n="skills.g3">Hỗ trợ bởi AI</span>
-          <div class="modal-skill-tags">
-            <span class="skill-chip"><span class="skill-chip-icon" style="background:#D97757"><img
-                  src="./icons/claude.svg" alt=""></span>Claude</span>
-            <span class="skill-chip"><span class="skill-chip-icon" style="background:#10A37F"><img
-                  src="./icons/chatgpt.svg" alt=""></span>ChatGPT</span>
-            <span class="skill-chip"><span class="skill-chip-icon" style="background:#1C69FF"><img
-                  src="./icons/gemini.svg" alt=""></span>Gemini</span>
+          <div class="skill-group">
+            <span class="mono-label" data-i18n="skills.g3">Hỗ trợ bởi AI</span>
+            <div class="modal-skill-tags">
+              <span class="skill-chip"><span class="skill-chip-icon" style="background:#D97757"><img
+                    src="./icons/claude.svg" alt=""></span>Claude</span>
+              <span class="skill-chip"><span class="skill-chip-icon" style="background:#10A37F"><img
+                    src="./icons/chatgpt.svg" alt=""></span>ChatGPT</span>
+              <span class="skill-chip"><span class="skill-chip-icon" style="background:#1C69FF"><img
+                    src="./icons/gemini.svg" alt=""></span>Gemini</span>
+            </div>
+            <p data-i18n="skills.aiDesc">Dùng AI hỗ trợ viết code, debug và tăng tốc học công nghệ mới trong quá trình
+              tự
+              học và xây dựng các dự án ở trên.</p>
           </div>
-          <p data-i18n="skills.aiDesc">Dùng AI hỗ trợ viết code, debug và tăng tốc học công nghệ mới trong quá trình tự
-            học và xây dựng các dự án ở trên.</p>
+          <div class="skill-group">
+            <span class="mono-label" data-i18n="skills.g4">Backend &amp; Realtime</span>
+            <div class="modal-skill-tags">
+              <span class="skill-chip"><span class="skill-chip-icon skill-chip-icon-text"
+                    style="background:#000">Ex</span>Express.js</span>
+              <span class="skill-chip"><span class="skill-chip-icon skill-chip-icon-text"
+                    style="background:#0C344B">Pr</span>Prisma</span>
+              <span class="skill-chip"><span class="skill-chip-icon skill-chip-icon-text"
+                    style="background:#010101">IO</span>Socket.IO</span>
+              <span class="skill-chip"><span class="skill-chip-icon skill-chip-icon-text"
+                    style="background:#FB015B">J</span>JWT</span>
+            </div>
+            <p data-i18n="skills.g4Desc">Xác thực JWT và phân quyền theo vai trò trong cả 4 dự án; Socket.IO và WebRTC
+              để xây dựng nhắn tin và gọi video thời gian thực trong Communix; Prisma ORM và NextAuth.js trong My
+              HRMS.</p>
+          </div>
         </div>
       </section>
 
@@ -392,7 +416,7 @@
       <section class="card card-map" data-key="map">
         <div class="card-title" data-i18n="map.title">Vị trí</div>
         <div class="map-frame">
-          <svg viewBox="0 0 300 180" xmlns="http://www.w3.org/2000/svg">
+          <svg viewBox="0 0 300 180" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <radialGradient id="mapGlow" cx="50%" cy="52%" r="55%">
                 <stop offset="0%" stop-color="var(--teal)" stop-opacity="0.30" />
