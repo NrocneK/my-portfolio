@@ -1,55 +1,142 @@
-/* ---- theme (dark/light) ---- */
-function applyTheme(theme){
-  document.documentElement.setAttribute('data-theme', theme);
-  const label = document.getElementById('themeLabel');
-  const icon = document.getElementById('themeIcon');
-  if(label) label.textContent = theme === 'dark' ? 'Dark' : 'Light';
-  if(icon) icon.innerHTML = theme === 'dark'
-    ? '<circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path>'
-    : '<path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"></path>';
-  localStorage.setItem('portfolio-theme', theme);
-}
+"use strict";
 
-function initThemeToggle(){
-  let currentTheme = localStorage.getItem('portfolio-theme') || 'dark';
-  applyTheme(currentTheme);
-  const btn = document.getElementById('themeToggle');
-  if(!btn) return;
-  btn.addEventListener('click', (e)=>{
-    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    applyTheme(currentTheme);
-    e.currentTarget.classList.add('spin');
-    setTimeout(()=> e.currentTarget.classList.remove('spin'), 400);
-  });
-}
+/* ============================================================
+   THEME
+   ============================================================ */
 
-/* ---- generic i18n text application ---- */
-function applyI18nText(dict, lang){
-  document.querySelectorAll('[data-i18n]').forEach(el=>{
-    const key = el.getAttribute('data-i18n');
-    if(dict[lang] && dict[lang][key] !== undefined) el.textContent = dict[lang][key];
-  });
-}
+const THEME_STORAGE_KEY = "portfolio-theme";
 
-/* ---- click ripple, auto-bound to any .btn / .toggle-btn on the page ---- */
-function spawnRipple(e){
-  const btn = e.currentTarget;
-  const rect = btn.getBoundingClientRect();
-  const diameter = Math.max(rect.width, rect.height);
-  const circle = document.createElement('span');
-  circle.className = 'ripple';
-  circle.style.width = circle.style.height = diameter + 'px';
-  circle.style.left = (e.clientX - rect.left - diameter / 2) + 'px';
-  circle.style.top = (e.clientY - rect.top - diameter / 2) + 'px';
-  btn.appendChild(circle);
-  setTimeout(()=> circle.remove(), 650);
-}
+function getPreferredTheme() {
+    const savedTheme = localStorage.getItem(THEME_STORAGE_KEY);
 
-function bindRipples(){
-  document.querySelectorAll('.btn, .toggle-btn').forEach(btn=>{
-    if(!btn.hasAttribute('data-ripple-bound')){
-      btn.setAttribute('data-ripple-bound', '1');
-      btn.addEventListener('click', spawnRipple);
+    if (savedTheme === "light" || savedTheme === "dark") {
+        return savedTheme;
     }
-  });
+
+    return window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: light)").matches
+        ? "light"
+        : "dark";
 }
+
+
+function applyTheme(theme) {
+    document.documentElement.dataset.theme = theme;
+
+    const button = document.getElementById("themeToggle");
+
+    if (!button) {
+        return;
+    }
+
+    const isLight = theme === "light";
+
+    button.textContent = isLight ? "☾" : "☼";
+
+    button.setAttribute(
+        "aria-label",
+        isLight
+            ? "Switch to dark theme"
+            : "Switch to light theme"
+    );
+}
+
+
+function initThemeToggle() {
+    const initialTheme = getPreferredTheme();
+
+    applyTheme(initialTheme);
+
+    const button = document.getElementById("themeToggle");
+
+    if (!button) {
+        return;
+    }
+
+    button.addEventListener("click", () => {
+
+        const currentTheme =
+            document.documentElement.dataset.theme || "dark";
+
+        const nextTheme =
+            currentTheme === "dark"
+                ? "light"
+                : "dark";
+
+        localStorage.setItem(
+            THEME_STORAGE_KEY,
+            nextTheme
+        );
+
+        applyTheme(nextTheme);
+    });
+}
+
+
+/* ============================================================
+   LANGUAGE
+   ============================================================ */
+
+function applyI18nText(dictionary, language) {
+
+    document
+        .querySelectorAll("[data-i18n]")
+        .forEach((element) => {
+
+            const key = element.dataset.i18n;
+            const value = dictionary?.[language]?.[key];
+
+            if (typeof value === "string") {
+                element.textContent = value;
+            }
+        });
+
+
+    document
+        .querySelectorAll("[data-i18n-placeholder]")
+        .forEach((element) => {
+
+            const key =
+                element.dataset.i18nPlaceholder;
+
+            const value =
+                dictionary?.[language]?.[key];
+
+            if (typeof value === "string") {
+                element.setAttribute(
+                    "placeholder",
+                    value
+                );
+            }
+        });
+}
+
+
+/* ============================================================
+   YEAR
+   ============================================================ */
+
+function updateCurrentYear() {
+
+    const yearElement =
+        document.getElementById("currentYear");
+
+    if (!yearElement) {
+        return;
+    }
+
+    yearElement.textContent =
+        String(new Date().getFullYear());
+}
+
+
+/* ============================================================
+   INIT
+   ============================================================ */
+
+document.addEventListener("DOMContentLoaded", () => {
+
+    initThemeToggle();
+    updateCurrentYear();
+
+});

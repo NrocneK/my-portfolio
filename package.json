@@ -1,0 +1,17 @@
+{
+    "name": "ngo-minh-nhut-portfolio",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Personal portfolio of Ngo Minh Nhut - Junior Fullstack Developer",
+    "scripts": {
+      "dev": "vite",
+      "build": "vite build",
+      "preview": "vite preview"
+    },
+    "devDependencies": {
+      "vite": "^7.1.0"
+    },
+    "dependencies": {
+      "nodemailer": "^7.0.6"
+    }
+  }
