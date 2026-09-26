@@ -715,47 +715,121 @@ function initScrollSpy() {
    CONTACT FORM
    ============================================================ */
 
+/* ============================================================
+   CONTACT FORM
+   Thay thế toàn bộ hàm initContactForm() cũ trong dashboard.js
+   (giữ nguyên lời gọi initContactForm() trong DOMContentLoaded)
+   ============================================================ */
+
+// Đổi URL production sau khi deploy backend
+const CONTACT_API_URL =
+    ["localhost", "127.0.0.1"].includes(window.location.hostname)
+        ? "http://localhost:3001/api/contact"
+        : "https://YOUR-BACKEND-URL/api/contact";
+
+const CONTACT_MESSAGES = {
+    vi: {
+        sending: "Đang gửi...",
+        success: "Đã gửi thành công. Mình sẽ phản hồi sớm nhất có thể!",
+        invalid: "Vui lòng điền đầy đủ và kiểm tra lại địa chỉ email.",
+        rateLimited: "Bạn gửi quá nhiều tin nhắn. Vui lòng thử lại sau.",
+        failed: "Không gửi được tin nhắn. Vui lòng thử lại hoặc email trực tiếp cho mình.",
+        network: "Không kết nối được máy chủ. Vui lòng thử lại sau."
+    },
+    en: {
+        sending: "Sending...",
+        success: "Message sent. I'll get back to you soon!",
+        invalid: "Please fill in every field and check your email address.",
+        rateLimited: "Too many messages. Please try again later.",
+        failed: "Could not send your message. Please try again or email me directly.",
+        network: "Cannot reach the server. Please try again later."
+    }
+};
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+
 function initContactForm() {
 
-    const form =
-        document.getElementById(
-            "contactForm"
-        );
+    const form = document.getElementById("contactForm");
+    const status = document.getElementById("formStatus");
+    const submitButton = document.getElementById("contactSubmit");
 
-    if (!form) {
+    if (!form || !status || !submitButton) {
         return;
     }
 
+    function setStatus(type, key) {
+        status.className = type ? `form-status ${type}` : "form-status";
+        status.textContent = CONTACT_MESSAGES[currentLanguage][key];
+    }
 
-    form.addEventListener(
-        "submit",
-        (event) => {
+    form.addEventListener("submit", async (event) => {
 
-            event.preventDefault();
+        event.preventDefault();
 
-            const status =
-                document.getElementById(
-                    "formStatus"
-                );
+        if (submitButton.disabled) {
+            return;
+        }
 
-            if (!status) {
-                return;
+        const data = Object.fromEntries(new FormData(form));
+
+        const payload = {
+            name: (data.name || "").trim(),
+            email: (data.email || "").trim(),
+            subject: (data.subject || "").trim(),
+            message: (data.message || "").trim(),
+            website: data.website || ""      // honeypot
+        };
+
+        // Form đang có novalidate nên phải tự kiểm tra
+        if (
+            !payload.name ||
+            !payload.subject ||
+            !payload.message ||
+            !EMAIL_PATTERN.test(payload.email)
+        ) {
+            setStatus("error", "invalid");
+            return;
+        }
+
+        submitButton.disabled = true;
+        submitButton.setAttribute("aria-busy", "true");
+        setStatus("", "sending");
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
+
+        try {
+            const response = await fetch(CONTACT_API_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+                signal: controller.signal
+            });
+
+            if (response.ok) {
+                form.reset();
+                setStatus("success", "success");
+            } else if (response.status === 429) {
+                setStatus("error", "rateLimited");
+            } else if (response.status === 400) {
+                setStatus("error", "invalid");
+            } else {
+                setStatus("error", "failed");
             }
 
+        } catch (error) {
+            setStatus("error", "network");
 
-            status.className =
-                "form-status";
-
-
-            status.textContent =
-                currentLanguage === "vi"
-                    ? "Chức năng gửi email sẽ được kết nối ở Phase 3."
-                    : "Email sending will be connected in Phase 3.";
-
+        } finally {
+            clearTimeout(timeoutId);
+            submitButton.disabled = false;
+            submitButton.removeAttribute("aria-busy");
         }
-    );
-
+    });
 }
+
 
 
 /* ============================================================

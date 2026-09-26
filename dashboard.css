@@ -128,12 +128,21 @@
             var(--bg-soft));
 
     border: 1px solid var(--border-strong);
-    border-radius: 32% 68% 62% 38% / 40% 40% 60% 60%;
+    border-radius: 50%;
 
     box-shadow: var(--shadow);
 
     overflow: hidden;
 }
+
+.avatar-image {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+    object-position: center 28%;
+}
+
 
 .avatar-placeholder {
     width: 62%;
