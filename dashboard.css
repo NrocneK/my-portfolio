@@ -1070,3 +1070,178 @@
     }
 
 }
+
+/* ============================================================
+   ROVER MASCOT
+   Ẩn mặc định; chỉ hiện khi rover-mascot.js xác nhận desktop
+   có chuột thật và không bật prefers-reduced-motion.
+   ============================================================ */
+
+.rover-trail {
+    display: none;
+
+    position: fixed;
+    inset: 0;
+
+    pointer-events: none;
+    z-index: 899;
+}
+
+.rover-trail.is-active {
+    display: block;
+}
+
+.rover-trail-dot {
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    width: 6px;
+    height: 6px;
+
+    border-radius: 50%;
+    background: var(--success);
+
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1);
+}
+
+.rover-trail-dot.is-active {
+    animation: roverTrailFade 550ms ease-out forwards;
+}
+
+.rover-mascot {
+    display: none;
+
+    position: fixed;
+    left: 0;
+    top: 0;
+
+    width: 64px;
+    height: 44px;
+
+    pointer-events: none;
+    z-index: 900;
+
+    will-change: transform;
+}
+
+.rover-mascot.is-active {
+    display: block;
+}
+
+.rover-mascot__tilt,
+.rover-mascot__kick {
+    width: 100%;
+    height: 100%;
+}
+
+.rover-mascot__kick {
+    transform-origin: 50% 70%;
+}
+
+.rover-mascot.is-kicked .rover-mascot__kick {
+    animation: roverKick 420ms ease-out;
+}
+
+.rover-body {
+    fill: var(--surface);
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+}
+
+.rover-visor {
+    fill: var(--bg-soft);
+}
+
+.rover-wheel {
+    fill: var(--bg-soft);
+    stroke: var(--border-strong);
+    stroke-width: 1.5;
+}
+
+.rover-antenna {
+    stroke: var(--border-strong);
+    stroke-width: 2;
+    stroke-linecap: round;
+}
+
+.rover-antenna-tip {
+    fill: var(--accent);
+    animation: roverPulse 2s ease-in-out infinite;
+}
+
+.rover-eye {
+    fill: var(--success);
+    transform-origin: center;
+    animation: roverPulse 2.4s ease-in-out infinite;
+}
+
+.rover-eye:last-of-type {
+    animation-delay: .3s;
+}
+
+.rover-mascot.is-scanning .rover-eye,
+.rover-mascot.is-scanning .rover-antenna-tip {
+    fill: var(--accent);
+    animation-duration: 1s;
+}
+
+@keyframes roverPulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: .4;
+    }
+}
+
+@keyframes roverKick {
+    0% {
+        transform: scale(1, 1);
+    }
+
+    30% {
+        transform: scale(.82, 1.16);
+    }
+
+    60% {
+        transform: scale(1.08, .9);
+    }
+
+    100% {
+        transform: scale(1, 1);
+    }
+}
+
+@keyframes roverTrailFade {
+    0% {
+        opacity: .5;
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    100% {
+        opacity: 0;
+        transform: translate(-50%, -50%) scale(2.4);
+    }
+}
+
+@media (hover: none),
+(pointer: coarse) {
+
+    .rover-mascot,
+    .rover-trail {
+        display: none !important;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+
+    .rover-mascot,
+    .rover-trail {
+        display: none !important;
+    }
+}
