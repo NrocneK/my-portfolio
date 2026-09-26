@@ -104,15 +104,9 @@
 }
 
 .hero-avatar-glow {
-    position: absolute;
-    inset: 12%;
-
-    background:
-        radial-gradient(circle,
-            rgba(124, 156, 255, 0.22),
-            transparent 68%);
-
-    filter: blur(20px);
+    /* Tắt: lớp glow hình vuông này lộ ra thành khối mờ không khớp
+       dáng người khi avatar đã xoá nền. Ảnh giờ tự hoà vào nền trang. */
+    display: none;
 }
 
 .hero-avatar {
@@ -121,26 +115,15 @@
 
     display: grid;
     place-items: center;
-
-    background:
-        linear-gradient(145deg,
-            var(--surface),
-            var(--bg-soft));
-
-    border: 1px solid var(--border-strong);
-    border-radius: 50%;
-
-    box-shadow: var(--shadow);
-
-    overflow: hidden;
 }
 
 .avatar-image {
     width: 100%;
     height: 100%;
 
-    object-fit: cover;
-    object-position: center 28%;
+    object-fit: contain;
+    /* hiện trọn ảnh gốc, không cắt vuông */
+    object-position: center;
 }
 
 

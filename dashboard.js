@@ -725,7 +725,7 @@ function initScrollSpy() {
 const CONTACT_API_URL =
     ["localhost", "127.0.0.1"].includes(window.location.hostname)
         ? "http://localhost:3001/api/contact"
-        : "https://YOUR-BACKEND-URL/api/contact";
+        : "https://my-portfolio-6o01.onrender.com/api/contact";
 
 const CONTACT_MESSAGES = {
     vi: {
