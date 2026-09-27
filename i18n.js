@@ -126,6 +126,9 @@ const dictionary = {
         "projects.wms.feature4Text":
             "Theo dõi hoạt động",
 
+        "projects.demo":
+            "Xem Demo",
+
         "projects.githubFrontend":
             "GitHub — Frontend",
 
@@ -371,6 +374,9 @@ const dictionary = {
 
         "projects.wms.feature4Text":
             "Operational activity tracking",
+
+        "projects.demo":
+            "Live Demo",
 
         "projects.githubFrontend":
             "GitHub — Frontend",
