@@ -4,6 +4,27 @@
 <head>
     <meta charset="UTF-8">
 
+    <!--
+        Chống "flash of wrong theme": set data-theme NGAY trước khi
+        trình duyệt render, không đợi DOMContentLoaded như
+        initThemeToggle() trong shared.js (hàm đó vẫn chạy sau để gắn
+        nút bấm, giá trị nó set ra sẽ trùng với giá trị này nên không
+        có lần "nhấp nháy" thứ hai).
+    -->
+    <script>
+        (function () {
+            try {
+                var saved = localStorage.getItem("portfolio-theme");
+                var theme = saved === "light" || saved === "dark"
+                    ? saved
+                    : (window.matchMedia("(prefers-color-scheme: light)").matches
+                        ? "light"
+                        : "dark");
+                document.documentElement.dataset.theme = theme;
+            } catch (e) { /* localStorage có thể bị chặn -> để mặc định */ }
+        })();
+    </script>
+
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <meta name="description"
@@ -15,11 +36,59 @@
 
     <title>Ngô Minh Nhựt — Junior Fullstack Developer</title>
 
+    <!--
+        TODO: thay bằng domain thật sau khi gắn domain cho Vercel
+        (hoặc domain Vercel mặc định của bạn), rồi cập nhật cả
+        og:url và canonical bên dưới cho khớp.
+    -->
+    <link rel="canonical" href="https://your-domain-here.vercel.app/">
+
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Ngô Minh Nhựt — Portfolio">
+    <meta property="og:title" content="Ngô Minh Nhựt — Junior Fullstack Developer">
+    <meta property="og:description"
+        content="Portfolio, projects, technical skills and contact of Ngô Minh Nhựt, a self-taught fullstack developer.">
+    <meta property="og:image" content="https://your-domain-here.vercel.app/assets/og-image.png">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:url" content="https://your-domain-here.vercel.app/">
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Ngô Minh Nhựt — Junior Fullstack Developer">
+    <meta name="twitter:description"
+        content="Portfolio, projects, technical skills and contact of Ngô Minh Nhựt, a self-taught fullstack developer.">
+    <meta name="twitter:image" content="https://your-domain-here.vercel.app/assets/og-image.png">
+
+    <link rel="icon" href="./favicon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+    <link rel="manifest" href="./manifest.json">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+
     <link rel="stylesheet" href="./shared.css">
     <link rel="stylesheet" href="./dashboard.css">
+
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Ngô Minh Nhựt",
+        "jobTitle": "Junior Fullstack Developer",
+        "url": "https://your-domain-here.vercel.app/",
+        "email": "mailto:kdc.1110639@gmail.com",
+        "sameAs": [
+            "https://github.com/NrocneK"
+        ],
+        "knowsAbout": ["React", "Next.js", "Node.js", "TypeScript", "MySQL"]
+    }
+    </script>
 </head>
 
 <body>
+
+    <div class="reading-progress" id="readingProgress" aria-hidden="true"></div>
 
     <!-- ========================================================
        HEADER
@@ -451,9 +520,16 @@
 
                         <div class="project-actions">
 
-                            <a href="https://github.com/NrocneK" target="_blank" rel="noopener noreferrer"
-                                class="button button-secondary" data-i18n="projects.github">
-                                GitHub
+                            <a href="https://github.com/NrocneK/wms-pro-frontend" target="_blank"
+                                rel="noopener noreferrer" class="button button-secondary"
+                                data-i18n="projects.githubFrontend">
+                                GitHub — Frontend
+                            </a>
+
+                            <a href="https://github.com/NrocneK/wms-pro-backend" target="_blank"
+                                rel="noopener noreferrer" class="button button-secondary"
+                                data-i18n="projects.githubBackend">
+                                GitHub — Backend
                             </a>
 
                         </div>
@@ -474,37 +550,11 @@
                             </div>
 
 
-                            <div class="window-body">
+                            <div class="window-body window-body-image">
 
-                                <div class="dashboard-placeholder">
-
-                                    <div class="placeholder-sidebar"></div>
-
-                                    <div class="placeholder-content">
-
-                                        <div class="placeholder-line large"></div>
-                                        <div class="placeholder-line"></div>
-
-                                        <div class="placeholder-grid">
-
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-
-                                        </div>
-
-                                        <div class="placeholder-table">
-
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-                                            <span></span>
-
-                                        </div>
-
-                                    </div>
-
-                                </div>
+                                <img src="./assets/projects/wms-pro-dashboard.webp"
+                                    alt="WMS Pro dashboard — tổng SKU, giá trị tồn kho, cảnh báo sắp hết, biểu đồ nhập/xuất 14 ngày và lịch sử giao dịch"
+                                    class="project-screenshot" width="1600" height="806" loading="lazy">
 
                             </div>
 
@@ -980,11 +1030,13 @@
 
                             <div class="cv-actions">
 
-                                <a href="#" class="button button-secondary" data-i18n="contact.cvVi">
+                                <a href="./CV_NgoMinhNhut_VI.docx" download class="button button-secondary"
+                                    data-i18n="contact.cvVi">
                                     CV — VI
                                 </a>
 
-                                <a href="#" class="button button-secondary" data-i18n="contact.cvEn">
+                                <a href="./CV_NgoMinhNhut_EN.docx" download class="button button-secondary"
+                                    data-i18n="contact.cvEn">
                                     CV — EN
                                 </a>
 
@@ -1134,12 +1186,19 @@
 
                 © <span id="currentYear"></span>
                 Ngô Minh Nhựt
+                <span class="footer-credit" data-i18n="footer.credit">
+                    · Designed &amp; built by Ngô Minh Nhựt
+                </span>
 
             </span>
 
         </div>
 
     </footer>
+
+    <button type="button" id="backToTop" class="back-to-top" aria-label="Back to top">
+        ↑
+    </button>
 
 
     <div class="rover-trail" id="roverTrail" aria-hidden="true"></div>
@@ -1162,9 +1221,10 @@
     </div>
 
 
-    <script src="./shared.js"></script>
-    <script src="./dashboard.js"></script>
-    <script src="./rover-mascot.js"></script>
+    <script src="./shared.js" defer></script>
+    <script src="./i18n.js" defer></script>
+    <script src="./dashboard.js" defer></script>
+    <script src="./rover-mascot.js" defer></script>
 
 </body>
 

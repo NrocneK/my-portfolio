@@ -115,6 +115,20 @@
 
     display: grid;
     place-items: center;
+
+    animation: avatarFloat 4s ease-in-out infinite;
+}
+
+@keyframes avatarFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-7px);
+    }
 }
 
 .avatar-image {
@@ -126,32 +140,6 @@
     object-position: center;
 }
 
-
-.avatar-placeholder {
-    width: 62%;
-    aspect-ratio: 1;
-
-    display: grid;
-    place-items: center;
-
-    color: var(--accent);
-
-    background:
-        radial-gradient(circle at 30% 25%,
-            rgba(124, 156, 255, 0.22),
-            transparent 60%),
-        var(--bg);
-
-    border: 1px solid var(--border);
-
-    border-radius: 50%;
-}
-
-.avatar-placeholder span {
-    font-size: clamp(3rem, 7vw, 5rem);
-    font-weight: 900;
-    letter-spacing: -0.08em;
-}
 
 .floating-card {
     position: absolute;
@@ -405,6 +393,10 @@
 }
 
 .project-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+
     margin-top: 28px;
 }
 
@@ -459,6 +451,27 @@
     padding: 18px;
 }
 
+.window-body-image {
+    padding: 0;
+
+    /* .project-window đã có overflow:hidden -> phần ảnh phóng to nhẹ
+       khi hover sẽ tự bị cắt gọn theo khung, không tràn ra ngoài bo góc */
+}
+
+.project-screenshot {
+    display: block;
+    width: 100%;
+    height: auto;
+
+    transition: transform 400ms ease;
+}
+
+.featured-project:hover .project-screenshot {
+    transform: scale(1.015);
+}
+
+/* Hiện tại chỉ WMS Pro có ảnh thật; các dự án khác vẫn có thể dùng lại
+   khối mockup giả này khi chưa có screenshot thật để thay vào. */
 .dashboard-placeholder {
     display: grid;
     grid-template-columns: 64px 1fr;
@@ -1243,5 +1256,136 @@
     .rover-mascot,
     .rover-trail {
         display: none !important;
+    }
+}
+
+/* ============================================================
+   SUBMIT BUTTON — trạng thái đang gửi (spinner)
+   ============================================================ */
+
+.button.is-loading {
+    position: relative;
+    color: transparent;
+    pointer-events: none;
+}
+
+.button.is-loading::after {
+    content: "";
+
+    position: absolute;
+    inset: 0;
+    margin: auto;
+
+    width: 18px;
+    height: 18px;
+
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #fff;
+
+    animation: buttonSpin 700ms linear infinite;
+}
+
+@keyframes buttonSpin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+
+/* ============================================================
+   READING PROGRESS
+   ============================================================ */
+
+.reading-progress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+
+    height: 3px;
+
+    background: var(--accent);
+    transform-origin: left;
+    transform: scaleX(0);
+
+    z-index: 1100;
+    pointer-events: none;
+}
+
+
+/* ============================================================
+   BACK TO TOP
+   ============================================================ */
+
+.back-to-top {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+
+    width: 46px;
+    height: 46px;
+
+    display: grid;
+    place-items: center;
+
+    color: var(--text);
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+
+    font-size: 1.1rem;
+    cursor: pointer;
+
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+
+    transition:
+        opacity var(--transition),
+        transform var(--transition),
+        background-color var(--transition-fast),
+        border-color var(--transition-fast);
+
+    z-index: 850;
+}
+
+.back-to-top:hover {
+    background: var(--surface-hover);
+    border-color: var(--accent);
+}
+
+.back-to-top.is-visible {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+
+.reveal-on-scroll {
+    opacity: 0;
+    transform: translateY(24px);
+    transition:
+        opacity 600ms ease,
+        transform 600ms ease;
+}
+
+.reveal-on-scroll.is-revealed {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+
+/* Thiết bị không hỗ trợ hover thật (chuột) hoặc bật giảm hiệu ứng
+   chuyển động -> vô hiệu hoá hoàn toàn back-to-top/reveal để tránh
+   phần tử kẹt ở trạng thái ẩn (opacity 0) nếu observer không kịp chạy */
+@media (prefers-reduced-motion: reduce) {
+    .reveal-on-scroll {
+        opacity: 1;
+        transform: none;
     }
 }

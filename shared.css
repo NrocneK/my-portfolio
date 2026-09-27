@@ -37,8 +37,8 @@
 
 
 /* ============================================================
-     LIGHT THEME
-     ============================================================ */
+       LIGHT THEME
+       ============================================================ */
 
 html[data-theme="light"] {
   --bg: #f5f7fb;
@@ -61,8 +61,8 @@ html[data-theme="light"] {
 
 
 /* ============================================================
-     RESET
-     ============================================================ */
+       RESET
+       ============================================================ */
 
 *,
 *::before,
@@ -120,8 +120,8 @@ a {
 
 
 /* ============================================================
-     LAYOUT
-     ============================================================ */
+       LAYOUT
+       ============================================================ */
 
 .container {
   width: min(calc(100% - 40px),
@@ -140,8 +140,8 @@ a {
 
 
 /* ============================================================
-     TYPOGRAPHY
-     ============================================================ */
+       TYPOGRAPHY
+       ============================================================ */
 
 .eyebrow {
   margin: 0 0 12px;
@@ -205,8 +205,8 @@ h3 {
 
 
 /* ============================================================
-     HEADER
-     ============================================================ */
+       HEADER
+       ============================================================ */
 
 .site-header {
   position: sticky;
@@ -271,6 +271,25 @@ h3 {
     background-color var(--transition-fast);
 }
 
+.site-nav a::after {
+  content: "";
+
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 4px;
+
+  height: 2px;
+  border-radius: 1px;
+
+  background: var(--accent-strong);
+
+  transform: scaleX(0);
+  transform-origin: left;
+
+  transition: transform var(--transition) ease;
+}
+
 .site-nav a:hover,
 .site-nav a.active {
   color: var(--text);
@@ -279,6 +298,10 @@ h3 {
 
 .site-nav a.active {
   color: var(--accent-strong);
+}
+
+.site-nav a.active::after {
+  transform: scaleX(1);
 }
 
 .header-actions {
@@ -318,8 +341,8 @@ h3 {
 
 
 /* ============================================================
-     BUTTONS
-     ============================================================ */
+       BUTTONS
+       ============================================================ */
 
 .button {
   min-height: 46px;
@@ -349,8 +372,43 @@ h3 {
 }
 
 .button-primary {
+  position: relative;
+  overflow: hidden;
+
   color: #fff;
   background: var(--accent);
+}
+
+.button-primary::before {
+  content: "";
+
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: -60%;
+
+  width: 40%;
+
+  background: linear-gradient(115deg,
+      transparent,
+      rgba(255, 255, 255, 0.35),
+      transparent);
+
+  transform: skewX(-20deg);
+}
+
+.button-primary:hover::before {
+  animation: buttonShine 750ms ease;
+}
+
+@keyframes buttonShine {
+  from {
+    left: -60%;
+  }
+
+  to {
+    left: 130%;
+  }
 }
 
 .button-primary:hover {
@@ -369,8 +427,8 @@ h3 {
 
 
 /* ============================================================
-     FOCUS
-     ============================================================ */
+       FOCUS
+       ============================================================ */
 
 :focus-visible {
   outline: 3px solid color-mix(in srgb,
@@ -382,8 +440,8 @@ h3 {
 
 
 /* ============================================================
-     FORMS
-     ============================================================ */
+       FORMS
+       ============================================================ */
 
 input,
 textarea {
@@ -419,8 +477,8 @@ textarea:focus {
 
 
 /* ============================================================
-     REDUCED MOTION
-     ============================================================ */
+       REDUCED MOTION
+       ============================================================ */
 
 @media (prefers-reduced-motion: reduce) {
 
