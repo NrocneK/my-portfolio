@@ -126,6 +126,9 @@ const dictionary = {
         "projects.wms.feature4Text":
             "Theo dõi hoạt động",
 
+        "projects.github":
+            "GitHub",
+
         "projects.demo":
             "Xem Demo",
 
@@ -149,7 +152,7 @@ const dictionary = {
             "Hệ thống quản lý nhân sự với phân quyền và các quy trình quản lý nhân viên.",
 
         "otherProjects.shop":
-            "Nền tảng thương mại điện tử bao gồm mua hàng, đặt hàng, thanh toán và quản trị.",
+            "Nền tảng thương mại điện tử bán túi xách: mua hàng, đặt hàng, thanh toán MoMo/VietQR và trang quản trị.",
 
 
         "skills.eyebrow":
@@ -375,6 +378,9 @@ const dictionary = {
         "projects.wms.feature4Text":
             "Operational activity tracking",
 
+        "projects.github":
+            "GitHub",
+
         "projects.demo":
             "Live Demo",
 
@@ -398,7 +404,7 @@ const dictionary = {
             "Human resource management system with role-based access and employee workflows.",
 
         "otherProjects.shop":
-            "E-commerce platform covering shopping, ordering, payments and administration.",
+            "E-commerce platform for bags: shopping, ordering, MoMo/VietQR payments and an admin dashboard.",
 
 
         "skills.eyebrow":

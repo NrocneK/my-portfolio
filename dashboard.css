@@ -1389,3 +1389,20 @@
         transform: none;
     }
 }
+
+
+/* ============================================================
+   PROJECT CARD ACTIONS (nút gọn hơn trong card nhỏ)
+   ============================================================ */
+
+.project-card .project-actions {
+    margin-top: 20px;
+    gap: 10px;
+}
+
+.project-card .project-actions .button {
+    min-height: 38px;
+    padding: 0 14px;
+
+    font-size: 0.85rem;
+}
