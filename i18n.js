@@ -189,11 +189,26 @@ const dictionary = {
         "experience.work.text":
             "Kinh nghiệm thực tế với tồn kho, quy trình nhập/xuất, phối hợp vận hành và giải quyết các vấn đề trong công việc.",
 
+        "experience.education.period":
+            "Học vấn",
+
         "experience.education.title":
             "Điện tử & Viễn thông",
 
         "experience.education.text":
-            "Nền tảng kỹ thuật về hệ thống truyền thông, mạng và tư duy giải quyết vấn đề kỹ thuật.",
+            "Cử nhân Điện tử Viễn thông, hệ Vừa Học Vừa Làm tại HCMUT — vừa đi làm vừa hoàn thành chương trình học trong 6 năm.",
+
+        "experience.present":
+            "Hiện tại",
+
+        "experience.selfTaught.period":
+            "Tự học lập trình",
+
+        "experience.selfTaught.title":
+            "Tự học phát triển phần mềm",
+
+        "experience.selfTaught.text":
+            "Bắt đầu từ VBA để tự động hoá báo cáo kho sau khi đảm nhận vai trò quản lý, sau đó chuyển dần sang lập trình Web App với React, Node.js và MySQL.",
 
 
         "contact.eyebrow":
@@ -441,11 +456,26 @@ const dictionary = {
         "experience.work.text":
             "Practical experience with inventory, inbound/outbound workflows, coordination and operational problem solving.",
 
+        "experience.education.period":
+            "Education",
+
         "experience.education.title":
             "Electronics & Telecommunications",
 
         "experience.education.text":
-            "Technical foundation in communication systems, networking and engineering problem solving.",
+            "Bachelor's in Electronics & Telecommunications, work-study program at HCMUT — completed over 6 years while working full-time.",
+
+        "experience.present":
+            "Present",
+
+        "experience.selfTaught.period":
+            "Self-Taught Development",
+
+        "experience.selfTaught.title":
+            "Self-Taught Software Development",
+
+        "experience.selfTaught.text":
+            "Started with VBA to automate warehouse reports after taking on a management role, then gradually moved into web app development with React, Node.js and MySQL.",
 
 
         "contact.eyebrow":
