@@ -1109,7 +1109,7 @@
 }
 
 /* ============================================================
-   ROVER MASCOT
+   ROVER MASCOT (chibi, sprite sheet)
    Ẩn mặc định; chỉ hiện khi rover-mascot.js xác nhận desktop
    có chuột thật và không bật prefers-reduced-motion.
    ============================================================ */
@@ -1154,8 +1154,8 @@
     left: 0;
     top: 0;
 
-    width: 64px;
-    height: 44px;
+    width: 128px;
+    height: 128px;
 
     pointer-events: none;
     z-index: 900;
@@ -1169,71 +1169,39 @@
 
 .rover-mascot__tilt,
 .rover-mascot__kick {
+    position: relative;
+
     width: 100%;
     height: 100%;
 }
 
 .rover-mascot__kick {
-    transform-origin: 50% 70%;
+    transform-origin: 50% 92%;
 }
 
 .rover-mascot.is-kicked .rover-mascot__kick {
     animation: roverKick 420ms ease-out;
 }
 
-.rover-body {
-    fill: var(--surface);
-    stroke: var(--border-strong);
-    stroke-width: 1.5;
+/* Sprite sheet 3x3: background-size 300% => mỗi ô là bước 0 / 50 / 100%.
+   Vị trí ô được rover-mascot.js đặt bằng background-position.
+   Cả 2 lớp luôn được mount để ảnh tải sẵn, không bị khựng ở lần đầu. */
+.rover-mascot__layer {
+    position: absolute;
+    inset: 0;
+
+    background-repeat: no-repeat;
+    background-size: 300% 300%;
+    background-position: 50% 50%;
 }
 
-.rover-visor {
-    fill: var(--bg-soft);
+.rover-mascot__layer--dir {
+    background-image: url("./assets/mascot/nhut-directions.webp");
 }
 
-.rover-wheel {
-    fill: var(--bg-soft);
-    stroke: var(--border-strong);
-    stroke-width: 1.5;
-}
-
-.rover-antenna {
-    stroke: var(--border-strong);
-    stroke-width: 2;
-    stroke-linecap: round;
-}
-
-.rover-antenna-tip {
-    fill: var(--accent);
-    animation: roverPulse 2s ease-in-out infinite;
-}
-
-.rover-eye {
-    fill: var(--success);
-    transform-origin: center;
-    animation: roverPulse 2.4s ease-in-out infinite;
-}
-
-.rover-eye:last-of-type {
-    animation-delay: .3s;
-}
-
-.rover-mascot.is-scanning .rover-eye,
-.rover-mascot.is-scanning .rover-antenna-tip {
-    fill: var(--accent);
-    animation-duration: 1s;
-}
-
-@keyframes roverPulse {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: .4;
-    }
+.rover-mascot__layer--react {
+    background-image: url("./assets/mascot/nhut-reactions.webp");
+    opacity: 0;
 }
 
 @keyframes roverKick {
