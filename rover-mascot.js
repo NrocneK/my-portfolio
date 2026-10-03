@@ -5,16 +5,25 @@
    Thú cưng nhỏ sống trên trang:
      - Đứng yên khi chuột ở gần; chỉ chạy theo khi chuột đi xa,
        và dừng lại ngay khi tới gần (không bám theo một vị trí cố định)
-     - Rảnh thì đi dạo, lâu hơn nữa thì ngủ gật
+     - Chạy tới nơi thì vẫy tay chào
+     - Rảnh thì đi dạo, dừng lại làm việc vặt (gõ laptop, đọc sách,
+       uống cà phê, nghĩ ngợi...), lâu hơn nữa thì ngáp rồi ngủ gật
      - Rê chuột lên người nó: nhìn theo, ngại ngùng, rồi thả tim
-     - Bấm: nhún nhảy; bấm dồn 4 lần: chóng mặt
+     - Bấm: nhảy lên; bấm dồn 4 lần: chóng mặt rồi bực bội
      - Nhấn giữ và kéo: nhấc nó lên; lắc mạnh: chóng mặt; thả nhanh: bị ném đi
+     - Rê vào link/nút: chỉ tay vào đó; bấm link/nút: giơ ngón cái
+     - Cuộn tới cuối trang: cầm cúp ăn mừng
 
-   Hình ảnh dùng 2 sprite sheet 3x3 theo chuẩn của page-mascot:
+   Hình ảnh dùng 5 sprite sheet 3x3 (2 sheet đầu theo chuẩn page-mascot):
      directions: ↖ ↑ ↗ / ← ● → / ↙ ↓ ↘   (hướng nhìn)
      reactions : blink, heart, sparkle /
                  surprised, wink, bashful /
                  sleepy, dizzy, delighted  (biểu cảm)
+     walk      : 8 khung đi bộ nhìn nghiêng sang phải (hướng trái = lật gương)
+     actions   : vẫy x2, thumbs up, vỗ tay, hô vang, ngồi xuống, nhảy, nhún vai, chỉ tay
+     work      : gõ laptop x2, suy nghĩ, ý tưởng, cà phê, đọc sách, ngáp, bực bội, cầm cúp
+   3 sheet sau được tải trễ sau khi trang load xong; chưa tải xong thì
+   mascot vẫn chạy bình thường bằng 2 sheet đầu.
 
    Chỉ chạy trên desktop có chuột thật (hover:hover, pointer:fine)
    và khi người dùng không bật prefers-reduced-motion.
@@ -51,13 +60,23 @@
     const EASE_CHASE = 0.07;
     const MAX_SPEED = 20;            // px / frame (60fps), giới hạn tốc độ chạy
     const STUCK_FRAMES = 25;         // bị kẹt ở mép màn hình quá lâu thì thôi đuổi
+    const ARRIVE_WAVE_MIN_TRAVEL = 350; // chạy xa hơn mức này tới nơi mới vẫy tay chào
 
     // Lang thang / ngủ
     const EASE_WANDER = 0.04;
+    const WANDER_MAX_SPEED = 2.6;
+    const WANDER_MAX_WALK_TIME = 9000; // ms tối đa cho một đoạn đi dạo
+    const WANDER_ARRIVE_DIST = 10;
     const IDLE_TIMEOUT = 5000;       // ms không di chuột -> đi dạo
-    const WANDER_MIN_INTERVAL = 2200;
-    const WANDER_MAX_INTERVAL = 4200;
-    const SLEEP_AFTER = 14000;       // ms đi dạo rồi thì ngủ gật (đặt 0 để tắt)
+    const SLEEP_AFTER = 14000;       // ms đi dạo rồi thì ngáp + ngủ gật (đặt 0 để tắt)
+    const YAWN_MS = 1700;
+    const GREETING_MS = 2400;        // lúc mới vào trang đứng vẫy tay chào
+
+    // Đi bộ (sprite sheet walk)
+    const WALK_STRIDE = 13;          // px di chuyển / 1 khung hình đi bộ
+    const WALK_MAX_PHASE = 0.32;     // tối đa khung / tick, tránh nhấp nháy khi chạy nhanh
+    const WALK_ON_SPEED = 1.0;       // px / tick: nhanh hơn mức này thì chuyển sang sprite đi bộ
+    const WALK_OFF_SPEED = 0.5;
 
     // Tương tác với chuột
     const HIT_RX = 38;               // vùng "người" của mascot (hình elip quanh tâm)
@@ -87,26 +106,40 @@
     // Sprite
     const DEAD_ZONE = 34;            // px; gần hơn mức này thì nhìn thẳng
     const HYSTERESIS = 0.12;         // chống giật khi sát biên giữa 2 hướng
-    const SCAN_REACTION_GAP = 1800;  // ms tối thiểu giữa 2 lần "surprised" khi hover link/nút
+    const GESTURE_GAP = 1800;        // ms tối thiểu giữa 2 lần chỉ tay khi hover link/nút
+    const THUMBS_GAP = 2500;
 
-    const PAYOFFS = ["heart", "sparkle", "delighted"];
-    const BOOP_PAYOFF = 120;
-    const BOOP_END = 560;
     const DIZZY_AFTER = 4;           // bấm dồn 4 lần -> chóng mặt
     const DIZZY_WINDOW = 1600;
     const DIZZY_END = 1100;
+    const FRUSTRATED_END = 1100;
 
+    // Tên ô trong từng sprite sheet (thứ tự đọc: trái -> phải, trên -> dưới)
     const DIRECTIONS = [
         "up-left", "up", "up-right",
         "left", "center", "right",
         "down-left", "down", "down-right"
     ];
 
-    const REACTIONS = [
-        "blink", "heart", "sparkle",
-        "surprised", "wink", "bashful",
-        "sleepy", "dizzy", "delighted"
-    ];
+    const REACT = {
+        blink: 0, heart: 1, sparkle: 2,
+        surprised: 3, wink: 4, bashful: 5,
+        sleepy: 6, dizzy: 7, delighted: 8
+    };
+
+    const ACT = {
+        waveA: 0, waveB: 1, thumbsUp: 2,
+        clap: 3, cheer: 4, crouch: 5,
+        jump: 6, shrug: 7, point: 8
+    };
+
+    const WORK = {
+        typeA: 0, typeB: 1, think: 2,
+        idea: 3, coffee: 4, read: 5,
+        yawn: 6, frustrated: 7, victory: 8
+    };
+
+    const WALK_FRAMES = 8;           // 8 khung đầu là một chu kỳ đi bộ
 
     // Theo chiều kim đồng hồ từ bên phải (khớp atan2 khi y hướng xuống)
     const CLOCKWISE = [
@@ -116,6 +149,33 @@
 
     const SECTOR = (Math.PI * 2) / CLOCKWISE.length;
 
+    // Phần thưởng sau cú nhảy khi bấm vào mascot (xoay vòng)
+    const PAYOFFS = [
+        { sheet: "react", cell: REACT.heart },
+        { sheet: "react", cell: REACT.sparkle },
+        { sheet: "actions", cell: ACT.cheer },
+        { sheet: "react", cell: REACT.delighted },
+        { sheet: "actions", cell: ACT.clap }
+    ];
+
+    // Việc vặt khi đi dạo xong một đoạn: w = độ ưu tiên, ms = [ngắn nhất, dài nhất]
+    const ACTIVITIES = [
+        { sheet: "work", frames: [WORK.typeA, WORK.typeB], period: 420, w: 4, ms: [3500, 5500] },
+        { sheet: "work", frames: [WORK.think], w: 2, ms: [2500, 3500] },
+        { sheet: "work", frames: [WORK.coffee], w: 2, ms: [3500, 5000] },
+        { sheet: "work", frames: [WORK.read], w: 2, ms: [3500, 5000] },
+        { sheet: "work", frames: [WORK.idea], w: 1.5, ms: [1800, 2400] },
+        { sheet: "actions", frames: [ACT.shrug], w: 1, ms: [1400, 1800] },
+        { sheet: "actions", frames: [ACT.waveA, ACT.waveB], period: 280, w: 1, ms: [1600, 2200] }
+    ];
+
+    // Sheet tải trễ (đường dẫn tính từ trang index.html)
+    const EXTRA_SHEETS = {
+        walk: "assets/mascot/nhut-walk.webp",
+        actions: "assets/mascot/nhut-actions.webp",
+        work: "assets/mascot/nhut-work.webp"
+    };
+
 
     /* ------------------------------------------------------------
        DOM
@@ -124,13 +184,26 @@
     const root = document.documentElement;
     const mascotEl = document.getElementById("roverMascot");
     const tiltEl = mascotEl?.querySelector(".rover-mascot__tilt");
+    const kickEl = mascotEl?.querySelector(".rover-mascot__kick");
     const dirLayer = mascotEl?.querySelector(".rover-mascot__layer--dir");
     const reactLayer = mascotEl?.querySelector(".rover-mascot__layer--react");
     const trailContainer = document.getElementById("roverTrail");
 
-    if (!mascotEl || !tiltEl || !dirLayer || !reactLayer || !trailContainer) {
+    if (!mascotEl || !tiltEl || !kickEl || !dirLayer || !reactLayer || !trailContainer) {
         return;
     }
+
+    // Mỗi sheet là một lớp chồng lên nhau, mỗi lúc chỉ hiện đúng một lớp
+    const layers = { dir: dirLayer, react: reactLayer };
+    const ready = { dir: true, react: true, walk: false, actions: false, work: false };
+
+    Object.keys(EXTRA_SHEETS).forEach((key) => {
+        const layer = document.createElement("span");
+        layer.className = `rover-mascot__layer rover-mascot__layer--${key}`;
+        layer.style.opacity = "0";
+        kickEl.appendChild(layer);
+        layers[key] = layer;
+    });
 
     const trailPool = [];
     for (let i = 0; i < TRAIL_POOL_SIZE; i++) {
@@ -146,7 +219,7 @@
        State
        ------------------------------------------------------------ */
 
-    // mode: 'idle' | 'chasing' | 'wander' | 'sleeping' | 'dragging' | 'flung'
+    // mode: 'idle' | 'chasing' | 'wander' | 'drowsy' | 'sleeping' | 'dragging' | 'flung'
     let mode = "wander";
 
     let pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
@@ -159,13 +232,23 @@
     let lastMouseY = pos.y;
     let lastMouseMoveAt = 0;
 
-    let wanderAt = 0;
+    // đi dạo: 'walking' (đang đi tới điểm đến) hoặc 'doing' (đang làm việc vặt)
+    let wanderPhase = "doing";
+    let activityUntil = 0;
+    let lastActivity = -1;
     let wanderStartedAt = 0;
+    let wanderWalkUntil = 0;
+    let drowsyUntil = 0;
     let noChaseUntil = 0;
+    let noWanderUntil = 0;
     let stillFrames = 0;
+    let chaseStart = { x: pos.x, y: pos.y };
+    let greeted = false;
 
     let hoveredEl = null;            // link / nút đang được chuột trỏ vào
-    let lastScanReactionAt = 0;
+    let lastGestureAt = 0;
+    let lastThumbsAt = 0;
+    let victoryDone = false;
 
     let hovered = false;             // chuột đang nằm trên người mascot
     let hoverSince = 0;
@@ -180,13 +263,18 @@
     let lastTrailX = pos.x;
     let lastTrailY = pos.y;
 
+    let walkPhase = 0;
+    let walkSpeed = 0;
+    let walking = false;
+    let facingLeft = false;
+
     let bobPhase = 0;
     let bobAmp = 0;
 
     let sector = -1;
-    let direction = "center";
-    let reaction = null;
-    let cues = [];                   // phản ứng ngắn: { at, until, name }
+    let directionCell = 4;           // ô "center"
+    let pose = { sheet: "dir", cell: 4, flip: false };
+    let cues = [];                   // phản ứng / cử chỉ đang chạy
     let boops = { count: 0, at: 0 };
     let lastFrame = 0;
 
@@ -203,6 +291,10 @@
         return Math.atan2(Math.sin(angle), Math.cos(angle));
     }
 
+    function rand(min, max) {
+        return min + Math.random() * (max - min);
+    }
+
     // Hệ số làm mượt không phụ thuộc tốc độ khung hình (60Hz hay 144Hz đều như nhau)
     function easeFor(ease, dtScale) {
         return 1 - Math.pow(1 - ease, dtScale);
@@ -214,7 +306,13 @@
         return dx * dx + dy * dy <= 1;
     }
 
-    function pickWanderTarget() {
+    function distToCursor() {
+        return mouseInside
+            ? Math.hypot(lastMouseX - pos.x, lastMouseY - pos.y)
+            : Infinity;
+    }
+
+    function pickWanderTarget(now) {
         target = {
             x: clamp(
                 Math.random() * window.innerWidth,
@@ -227,22 +325,14 @@
                 window.innerHeight - SAFE_BOTTOM
             )
         };
-        wanderAt =
-            performance.now() +
-            WANDER_MIN_INTERVAL +
-            Math.random() * (WANDER_MAX_INTERVAL - WANDER_MIN_INTERVAL);
+        wanderWalkUntil = now + WANDER_MAX_WALK_TIME;
     }
 
     function startWander(now) {
         mode = "wander";
+        wanderPhase = "walking";
         wanderStartedAt = now;
-        pickWanderTarget();
-    }
-
-    function distToCursor() {
-        return mouseInside
-            ? Math.hypot(lastMouseX - pos.x, lastMouseY - pos.y)
-            : Infinity;
+        pickWanderTarget(now);
     }
 
     function spawnTrailDot(x, y) {
@@ -267,7 +357,32 @@
 
 
     /* ------------------------------------------------------------
-       Sprite: hướng nhìn + biểu cảm
+       Tải trễ các sheet phụ
+       ------------------------------------------------------------ */
+
+    function loadExtraSheets() {
+        Object.keys(EXTRA_SHEETS).forEach((key) => {
+            const img = new Image();
+            img.onload = () => {
+                layers[key].style.backgroundImage = `url("${EXTRA_SHEETS[key]}")`;
+                ready[key] = true;
+                if (key === "actions") {
+                    greet(performance.now());
+                }
+            };
+            img.src = EXTRA_SHEETS[key];
+        });
+    }
+
+    if (document.readyState === "complete") {
+        setTimeout(loadExtraSheets, 600);
+    } else {
+        window.addEventListener("load", () => setTimeout(loadExtraSheets, 600));
+    }
+
+
+    /* ------------------------------------------------------------
+       Sprite: chọn ô trong sheet
        ------------------------------------------------------------ */
 
     // background-size 300% => mỗi ô là bước 0 / 50 / 100% trên cả 2 trục
@@ -276,18 +391,37 @@
             `${(index % 3) * 50}% ${Math.floor(index / 3) * 50}%`;
     }
 
-    function setDirection(dir) {
-        if (dir === direction) {
+    function setPose(sheet, cell, flip) {
+        // sheet chưa tải xong -> dùng tạm hướng nhìn
+        if (!ready[sheet]) {
+            sheet = "dir";
+            cell = directionCell;
+            flip = false;
+        }
+
+        if (sheet === pose.sheet && cell === pose.cell && flip === pose.flip) {
             return;
         }
-        direction = dir;
-        setCell(dirLayer, DIRECTIONS.indexOf(dir));
+
+        const switching = sheet !== pose.sheet;
+        if (switching) {
+            layers[pose.sheet].style.opacity = "0";
+            layers[pose.sheet].style.transform = "";
+            layers[sheet].style.opacity = "1";
+        }
+        if (switching || cell !== pose.cell) {
+            setCell(layers[sheet], cell);
+        }
+        if (switching || flip !== pose.flip) {
+            layers[sheet].style.transform = flip ? "scaleX(-1)" : "";
+        }
+        pose = { sheet, cell, flip };
     }
 
     function updateDirection(vx, vy) {
         if (Math.hypot(vx, vy) < DEAD_ZONE) {
             sector = -1;
-            setDirection("center");
+            directionCell = DIRECTIONS.indexOf("center");
             return;
         }
 
@@ -302,83 +436,176 @@
         }
 
         sector = (Math.round(angle / SECTOR) + CLOCKWISE.length) % CLOCKWISE.length;
-        setDirection(CLOCKWISE[sector]);
+        directionCell = DIRECTIONS.indexOf(CLOCKWISE[sector]);
     }
 
-    function setReaction(name) {
-        if (name === reaction) {
-            return;
-        }
-        reaction = name;
-        if (name) {
-            setCell(reactLayer, REACTIONS.indexOf(name));
-        }
-        reactLayer.style.opacity = name ? "1" : "0";
-        dirLayer.style.opacity = name ? "0" : "1";
+
+    /* ------------------------------------------------------------
+       Cue: phản ứng (react), cử chỉ (gesture), việc vặt (activity)
+         react    : biểu cảm + cú nhảy khi bấm; không bị cắt khi mascot di chuyển
+         gesture  : vẫy tay, chỉ tay, giơ ngón cái, ngáp...; dừng ngay khi mascot đi
+         activity : việc vặt lúc đi dạo; dừng ngay khi mascot đi
+       ------------------------------------------------------------ */
+
+    function makeCue(kind, at, ms, sheet, frames, period, flip) {
+        return {
+            kind, at, until: at + ms, sheet,
+            frames: Array.isArray(frames) ? frames : [frames],
+            period: period || 1e9,
+            flip: !!flip
+        };
     }
 
-    // Biểu cảm nền theo trạng thái (khi không có phản ứng ngắn nào đang chạy)
-    function ambientReaction(now) {
-        if (mode === "sleeping") {
-            return "sleepy";
-        }
-        if (mode === "dragging") {
-            return "surprised";
-        }
-        if (hovered) {
-            const dwell = now - hoverSince;
-            if (dwell > PET_HEART_AFTER) {
-                return "heart";
-            }
-            if (dwell > PET_BASHFUL_AFTER) {
-                return "bashful";
-            }
-        }
-        return null;
+    function reactCue(name, ms, now) {
+        cues = [makeCue("react", now, ms, "react", REACT[name])];
     }
 
     function activeCue(now) {
         cues = cues.filter((cue) => cue.until > now);
         const cue = cues.find((c) => c.at <= now);
-        return cue ? cue.name : null;
+        if (!cue) {
+            return null;
+        }
+        const i = Math.floor((now - cue.at) / cue.period) % cue.frames.length;
+        return { sheet: cue.sheet, cell: cue.frames[i], flip: cue.flip };
     }
 
-    function playReaction(name, ms, now) {
-        cues = [{ at: now, until: now + ms, name }];
+    function dropMovingCues() {
+        cues = cues.filter((cue) => cue.kind === "react");
+    }
+
+    // Chuỗi cue nối tiếp nhau: steps = [{ ms, sheet, frames, period }]
+    function sequence(kind, now, steps) {
+        let t = now;
+        cues = steps.map((s) => {
+            const cue = makeCue(kind, t, s.ms, s.sheet, s.frames, s.period, s.flip);
+            t += s.ms;
+            return cue;
+        });
+    }
+
+    // Biểu cảm nền theo trạng thái (khi không có cue nào đang chạy)
+    function ambientPose(now) {
+        if (mode === "sleeping") {
+            return { sheet: "react", cell: REACT.sleepy, flip: false };
+        }
+        if (mode === "dragging") {
+            return { sheet: "react", cell: REACT.surprised, flip: false };
+        }
+        if (hovered) {
+            const dwell = now - hoverSince;
+            if (dwell > PET_HEART_AFTER) {
+                return { sheet: "react", cell: REACT.heart, flip: false };
+            }
+            if (dwell > PET_BASHFUL_AFTER) {
+                return { sheet: "react", cell: REACT.bashful, flip: false };
+            }
+        }
+        return null;
     }
 
     function boop(now) {
         boops.count = now - boops.at < DIZZY_WINDOW ? boops.count + 1 : 1;
         boops.at = now;
 
+        // bấm dồn -> chóng mặt, rồi bực bội
         if (boops.count >= DIZZY_AFTER) {
             boops.count = 0;
-            cues = [{ at: now, until: now + DIZZY_END, name: "dizzy" }];
+            const steps = [{ ms: DIZZY_END, sheet: "react", frames: REACT.dizzy }];
+            if (ready.work) {
+                steps.push({ ms: FRUSTRATED_END, sheet: "work", frames: WORK.frustrated });
+            }
+            sequence("react", now, steps);
+            return;
+        }
+
+        const payoff = PAYOFFS[(boops.count - 1) % PAYOFFS.length];
+
+        if (ready.actions) {
+            // ngồi xuống -> nhảy -> chạm đất -> ăn mừng
+            sequence("react", now, [
+                { ms: 90, sheet: "actions", frames: ACT.crouch },
+                { ms: 300, sheet: "actions", frames: ACT.jump },
+                { ms: 110, sheet: "actions", frames: ACT.crouch },
+                { ms: 450, sheet: payoff.sheet, frames: payoff.cell }
+            ]);
         } else {
-            cues = [
-                { at: now, until: now + BOOP_PAYOFF, name: "blink" },
-                {
-                    at: now + BOOP_PAYOFF,
-                    until: now + BOOP_END,
-                    name: PAYOFFS[(boops.count - 1) % PAYOFFS.length]
-                }
-            ];
+            playAnimation("is-hop", 460);
+            sequence("react", now, [
+                { ms: 120, sheet: "react", frames: REACT.blink },
+                { ms: 440, sheet: payoff.sheet, frames: payoff.cell }
+            ]);
         }
     }
 
 
     /* ------------------------------------------------------------
-       Trạng thái: ngủ / thức / hover / kéo
+       Việc vặt, chào hỏi, ngáp
        ------------------------------------------------------------ */
+
+    function pickActivity() {
+        const options = ACTIVITIES
+            .map((a, i) => ({ a, i }))
+            .filter(({ a, i }) => ready[a.sheet] && i !== lastActivity);
+        if (!options.length) {
+            return null;
+        }
+        let roll = Math.random() * options.reduce((sum, o) => sum + o.a.w, 0);
+        for (const o of options) {
+            roll -= o.a.w;
+            if (roll <= 0) {
+                lastActivity = o.i;
+                return o.a;
+            }
+        }
+        return options[options.length - 1].a;
+    }
+
+    function beginActivity(now, act) {
+        const ms = rand(act.ms[0], act.ms[1]);
+        cues = [makeCue("activity", now, ms, act.sheet, act.frames, act.period)];
+        wanderPhase = "doing";
+        activityUntil = now + ms;
+    }
+
+    function greet(now) {
+        // chỉ chào một lần, và chỉ khi mascot đang đứng chờ lúc mới vào trang
+        if (greeted || mode !== "wander" || wanderPhase !== "doing") {
+            return;
+        }
+        greeted = true;
+        const ms = Math.max(600, activityUntil - now);
+        cues = [makeCue("activity", now, ms, "actions", [ACT.waveA, ACT.waveB], 280)];
+    }
+
+    function beginDrowsy(now) {
+        mode = "drowsy";
+        target = { x: pos.x, y: pos.y };
+        if (ready.work) {
+            drowsyUntil = now + YAWN_MS;
+            cues = [makeCue("gesture", now, YAWN_MS, "work", WORK.yawn)];
+        } else {
+            drowsyUntil = now;
+        }
+    }
 
     function fallAsleep() {
         mode = "sleeping";
         target = { x: pos.x, y: pos.y };
+        cues = [];
     }
+
+
+    /* ------------------------------------------------------------
+       Trạng thái: thức / hover / kéo
+       ------------------------------------------------------------ */
 
     function wakeUp(now) {
         mode = distToCursor() > FOLLOW_START ? "chasing" : "idle";
-        playReaction("surprised", 500, now);
+        if (mode === "chasing") {
+            chaseStart = { x: pos.x, y: pos.y };
+        }
+        reactCue("surprised", 500, now);
     }
 
     function updateGrabCursor() {
@@ -398,14 +625,15 @@
         if (over) {
             if (mode === "sleeping") {
                 wakeUp(now);
-            } else if (mode === "chasing" || mode === "wander") {
+            } else if (mode === "chasing" || mode === "wander" || mode === "drowsy") {
                 mode = "idle";            // đang được vuốt ve thì đứng yên
+                dropMovingCues();
             }
         }
         updateGrabCursor();
     }
 
-    function startDrag(now) {
+    function startDrag() {
         mode = "dragging";
         dragOffset = { x: press.x - pos.x, y: press.y - pos.y };
         dragVel = { x: 0, y: 0 };
@@ -430,11 +658,11 @@
             const scale = Math.min(1.1, FLING_MAX_SPEED / speed);
             vel = { x: dragVel.x * scale, y: dragVel.y * scale };
             mode = "flung";
-            playReaction("dizzy", 900, now);
+            reactCue("dizzy", 900, now);
         } else {
             mode = "idle";
             playAnimation("is-land", 380);
-            playReaction("delighted", 700, now);
+            reactCue("delighted", 700, now);
         }
     }
 
@@ -454,7 +682,7 @@
         // nhấn giữ rồi kéo xa quá ngưỡng -> bắt đầu nhấc mascot lên
         if (press && !press.dragging && !press.onInteractive) {
             if (Math.hypot(lastMouseX - press.x, lastMouseY - press.y) > DRAG_THRESHOLD) {
-                startDrag(now);
+                startDrag();
             }
         }
 
@@ -464,8 +692,12 @@
 
         if (mode === "sleeping") {
             wakeUp(now);
-        } else if (mode === "wander") {
+        } else if (mode === "wander" || mode === "drowsy") {
             mode = distToCursor() > FOLLOW_START ? "chasing" : "idle";
+            if (mode === "chasing") {
+                chaseStart = { x: pos.x, y: pos.y };
+            }
+            dropMovingCues();
         }
 
         if (hovered) {
@@ -507,11 +739,10 @@
             return;
         }
 
-        // bấm thường (không kéo) trúng người mascot -> nhún nhảy
+        // bấm thường (không kéo) trúng người mascot -> nhảy lên
         if (wasPress && inHit(event.clientX, event.clientY)) {
-            playAnimation("is-hop", 460);
             boop(now);
-            if (mode === "sleeping") {
+            if (mode === "sleeping" || mode === "drowsy" || mode === "wander") {
                 mode = "idle";
             }
         }
@@ -525,6 +756,20 @@
         }
     }, true);
 
+    // Người dùng bấm link/nút khi mascot đứng gần -> giơ ngón cái
+    document.addEventListener("click", (event) => {
+        const el = event.target.closest?.(INTERACTIVE_SELECTOR);
+        if (!el || !ready.actions || inHit(event.clientX, event.clientY)) {
+            return;
+        }
+        const now = performance.now();
+        const near = distToCursor() <= FOLLOW_START * 1.3;
+        if (near && mode === "idle" && now - lastThumbsAt > THUMBS_GAP) {
+            lastThumbsAt = now;
+            cues = [makeCue("gesture", now, 1100, "actions", ACT.thumbsUp)];
+        }
+    });
+
     document.addEventListener("pointerover", (event) => {
         const el = event.target.closest(INTERACTIVE_SELECTOR);
         if (!el || el === hoveredEl) {
@@ -532,16 +777,18 @@
         }
         hoveredEl = el;
 
-        // chỉ "tò mò" nhìn vào link/nút khi mascot đang ở gần và đang rảnh
+        // chỉ "tò mò" chỉ tay vào link/nút khi mascot đang ở gần và đứng rảnh
         const now = performance.now();
         const near = distToCursor() <= FOLLOW_START * 1.3;
-        if (
-            near &&
-            (mode === "idle" || mode === "chasing") &&
-            now - lastScanReactionAt > SCAN_REACTION_GAP
-        ) {
-            lastScanReactionAt = now;
-            playReaction("surprised", 450, now);
+        if (near && mode === "idle" && now - lastGestureAt > GESTURE_GAP) {
+            lastGestureAt = now;
+            if (ready.actions) {
+                const rect = el.getBoundingClientRect();
+                const elementIsLeft = rect.left + rect.width / 2 < pos.x;
+                cues = [makeCue("gesture", now, 1400, "actions", ACT.point, 0, elementIsLeft)];
+            } else {
+                reactCue("surprised", 450, now);
+            }
         }
     });
 
@@ -555,6 +802,25 @@
             hoveredEl = null;
         }
     });
+
+    // Cuộn tới cuối trang (một lần) -> cầm cúp ăn mừng
+    window.addEventListener("scroll", () => {
+        if (victoryDone || !ready.work || mode === "dragging" || mode === "flung") {
+            return;
+        }
+        const doc = document.documentElement;
+        if (doc.scrollHeight < window.innerHeight * 1.5) {
+            return;
+        }
+        if (window.innerHeight + window.scrollY >= doc.scrollHeight - 24) {
+            victoryDone = true;
+            const now = performance.now();
+            mode = "idle";
+            noChaseUntil = now + 2800;
+            noWanderUntil = now + 2800;
+            cues = [makeCue("gesture", now, 2600, "work", WORK.victory)];
+        }
+    }, { passive: true });
 
     root.addEventListener("mouseleave", () => {
         mouseInside = false;           // chuột rời trang -> mascot tự do đi dạo
@@ -618,12 +884,11 @@
             reversals = reversals.filter((t) => now - t < SHAKE_WINDOW);
             if (reversals.length >= SHAKE_REVERSALS) {
                 reversals = [];
-                playReaction("dizzy", DIZZY_END, now);
+                reactCue("dizzy", DIZZY_END, now);
             }
 
             rotation += (clamp((tx - pos.x) * 1.1 + dragVel.x * 1.6, -28, 28) - rotation)
                 * easeFor(0.25, dtScale);
-            moving = 0;
 
         } else if (mode === "flung") {
             // bị ném: lướt đi, ma sát dần, nảy khi chạm mép
@@ -650,7 +915,7 @@
                 mode = "idle";
                 noChaseUntil = now + 600;
                 playAnimation("is-land", 380);
-                playReaction("delighted", 600, now);
+                reactCue("delighted", 600, now);
             }
 
         } else {
@@ -662,7 +927,11 @@
                     if (mouseInside && d > FOLLOW_START && now > noChaseUntil) {
                         mode = "chasing";
                         stillFrames = 0;
-                    } else if (!mouseInside || now - lastMouseMoveAt > IDLE_TIMEOUT) {
+                        chaseStart = { x: pos.x, y: pos.y };
+                    } else if (
+                        (!mouseInside || now - lastMouseMoveAt > IDLE_TIMEOUT) &&
+                        now > noWanderUntil
+                    ) {
                         startWander(now);
                     }
                 }
@@ -670,7 +939,12 @@
 
             if (mode === "chasing") {
                 if (!mouseInside || hovered || d <= STOP_DIST + 6) {
-                    mode = "idle";               // tới gần rồi -> dừng, không đứng cố định một góc
+                    // tới gần rồi -> dừng; chạy xa mới tới thì vẫy tay chào
+                    const traveled = Math.hypot(pos.x - chaseStart.x, pos.y - chaseStart.y);
+                    mode = "idle";
+                    if (mouseInside && !hovered && ready.actions && traveled > ARRIVE_WAVE_MIN_TRAVEL) {
+                        cues = [makeCue("gesture", now, 1300, "actions", [ACT.waveA, ACT.waveB], 280)];
+                    }
                 } else {
                     // đi về phía chuột, nhưng dừng cách STOP_DIST (đứng ngay phía mình đi tới)
                     const ux = (pos.x - lastMouseX) / d;
@@ -683,22 +957,41 @@
             }
 
             if (mode === "wander") {
-                if (SLEEP_AFTER && now - wanderStartedAt > SLEEP_AFTER) {
-                    fallAsleep();
-                } else if (now >= wanderAt) {
-                    pickWanderTarget();
+                if (wanderPhase === "doing") {
+                    if (now >= activityUntil) {
+                        wanderPhase = "walking";
+                        pickWanderTarget(now);
+                    }
+                } else {
+                    const left = Math.hypot(target.x - pos.x, target.y - pos.y);
+                    if (SLEEP_AFTER && now - wanderStartedAt > SLEEP_AFTER) {
+                        beginDrowsy(now);           // đi dạo đã lâu -> ngáp rồi ngủ
+                    } else if (left < WANDER_ARRIVE_DIST || now >= wanderWalkUntil) {
+                        const act = pickActivity();
+                        if (act) {
+                            beginActivity(now, act);
+                        } else {
+                            pickWanderTarget(now);
+                        }
+                    }
                 }
             }
 
+            if (mode === "drowsy" && now >= drowsyUntil) {
+                fallAsleep();
+            }
+
             // --- di chuyển
-            if (mode === "chasing" || mode === "wander") {
+            const walkingNow =
+                mode === "chasing" || (mode === "wander" && wanderPhase === "walking");
+            if (walkingNow) {
                 const ease = mode === "chasing" ? EASE_CHASE : EASE_WANDER;
                 const k = easeFor(ease, dtScale);
                 stepX = (target.x - pos.x) * k;
                 stepY = (target.y - pos.y) * k;
 
                 const len = Math.hypot(stepX, stepY);
-                const maxStep = MAX_SPEED * dtScale;
+                const maxStep = (mode === "chasing" ? MAX_SPEED : WANDER_MAX_SPEED) * dtScale;
                 if (len > maxStep) {
                     stepX *= maxStep / len;
                     stepY *= maxStep / len;
@@ -712,6 +1005,9 @@
                     if (stillFrames > STUCK_FRAMES) {
                         mode = "idle";               // kẹt ở mép màn hình
                         noChaseUntil = now + 600;
+                        if (ready.actions) {
+                            cues = [makeCue("gesture", now, 1200, "actions", ACT.shrug)];
+                        }
                     }
                 }
             }
@@ -719,18 +1015,42 @@
             pos.x = clamp(pos.x, SAFE_SIDE, W - SAFE_SIDE);
             pos.y = clamp(pos.y, SAFE_TOP, H - SAFE_BOTTOM);
 
-            rotation += (clamp(stepX * 1.2, -8, 8) - rotation) * easeFor(0.15, dtScale);
+            // bắt đầu đi thì cử chỉ / việc vặt phải dừng lại
+            if (moving > 1.2) {
+                dropMovingCues();
+            }
         }
 
-        // --- nhìn về đâu
+        // --- đi bộ: bật/tắt sprite đi bộ, lật theo hướng đi
+        walkSpeed += (moving - walkSpeed) * easeFor(0.3, dtScale);
+        if (!walking && walkSpeed > WALK_ON_SPEED) {
+            walking = true;
+        } else if (walking && walkSpeed < WALK_OFF_SPEED) {
+            walking = false;
+        }
+        if (Math.abs(stepX) > 0.3) {
+            facingLeft = stepX < 0;
+        }
+        const useWalkSprite = walking && ready.walk;
+        if (useWalkSprite) {
+            walkPhase += Math.min(WALK_MAX_PHASE, moving / WALK_STRIDE) * dtScale;
+        }
+
+        // --- nghiêng người
+        if (mode !== "dragging" && mode !== "flung") {
+            const tilt = useWalkSprite ? 0 : clamp(stepX * 1.2, -8, 8);
+            rotation += (tilt - rotation) * easeFor(0.15, dtScale);
+        }
+
+        // --- nhìn về đâu (dùng khi đứng yên)
         let lookX = pos.x;
         let lookY = pos.y;
-        if (mode === "sleeping") {
+        if (mode === "sleeping" || mode === "drowsy") {
             // nhìn thẳng
         } else if (mode === "wander") {
             lookX = target.x;
             lookY = target.y;
-        } else if (hoveredEl && !hovered && mouseInside && (mode === "idle" || mode === "chasing")
+        } else if (hoveredEl && !hovered && mouseInside && mode === "idle"
             && distToCursor() <= FOLLOW_START * 1.3) {
             const rect = hoveredEl.getBoundingClientRect();
             lookX = rect.left + rect.width / 2;
@@ -744,11 +1064,22 @@
         }
         updateDirection(lookX - pos.x, lookY - pos.y);
 
-        // --- biểu cảm: phản ứng ngắn ưu tiên, không thì theo trạng thái
-        setReaction(activeCue(now) || ambientReaction(now));
+        // --- chọn tư thế: cue > biểu cảm nền > đi bộ > hướng nhìn
+        const cue = activeCue(now);
+        const ambient = cue ? null : ambientPose(now);
+        if (cue) {
+            setPose(cue.sheet, cue.cell, cue.flip);
+        } else if (ambient) {
+            setPose(ambient.sheet, ambient.cell, ambient.flip);
+        } else if (useWalkSprite) {
+            setPose("walk", Math.floor(walkPhase) % WALK_FRAMES, facingLeft);
+        } else {
+            setPose("dir", directionCell, false);
+        }
 
-        // --- nhún nhẹ theo nhịp bước khi đang di chuyển
-        bobAmp += ((moving > 1.2 ? 1 : 0) - bobAmp) * easeFor(0.15, dtScale);
+        // --- nhún nhẹ theo nhịp bước (chỉ khi chưa có sprite đi bộ)
+        const bobbing = moving > 1.2 && !useWalkSprite;
+        bobAmp += ((bobbing ? 1 : 0) - bobAmp) * easeFor(0.15, dtScale);
         bobPhase += moving * dtScale * 0.16;
         const bob = Math.abs(Math.sin(bobPhase)) * 6 * bobAmp;
 
@@ -765,7 +1096,15 @@
        Khởi động
        ------------------------------------------------------------ */
 
-    startWander(performance.now());
+    // Lúc mới vào trang: đứng chờ một chút (để vẫy tay chào khi sheet "actions" tải xong)
+    {
+        const now = performance.now();
+        mode = "wander";
+        wanderPhase = "doing";
+        wanderStartedAt = now;
+        activityUntil = now + GREETING_MS;
+    }
+
     mascotEl.classList.add("is-active");
     trailContainer.classList.add("is-active");
     requestAnimationFrame(frame);
