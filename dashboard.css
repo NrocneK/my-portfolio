@@ -1110,8 +1110,8 @@
 
 /* ============================================================
    ROVER MASCOT (chibi, sprite sheet)
-   Ẩn mặc định; chỉ hiện khi rover-mascot.js xác nhận desktop
-   có chuột thật và không bật prefers-reduced-motion.
+   Ẩn mặc định; chỉ hiện khi rover-mascot.js xác nhận thiết bị phù hợp (chuột hoặc cảm ứng)
+   có chuột thật hoặc cảm ứng, và không bật prefers-reduced-motion.
    ============================================================ */
 
 .rover-trail {
@@ -1275,10 +1275,10 @@ html.rover-dragging * {
     }
 }
 
+/* Vệt chấm theo con trỏ chỉ có ý nghĩa với chuột; mascot vẫn hiện trên cảm ứng */
 @media (hover: none),
 (pointer: coarse) {
 
-    .rover-mascot,
     .rover-trail {
         display: none !important;
     }

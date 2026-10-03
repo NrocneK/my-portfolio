@@ -40,10 +40,14 @@
     const supportsRealMouse =
         window.matchMedia("(hover: hover) and (pointer: fine)").matches;
 
+    // Điện thoại / máy tính bảng: không có chuột -> điều khiển bằng chạm
+    const isTouch = !supportsRealMouse &&
+        (navigator.maxTouchPoints > 0 || "ontouchstart" in window);
+
     const reducedMotion =
         window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    if (!supportsRealMouse || reducedMotion) {
+    if (reducedMotion || (!supportsRealMouse && !isTouch)) {
         return;
     }
 
@@ -52,38 +56,42 @@
        Cấu hình
        ------------------------------------------------------------ */
 
-    const SIZE = 128;                // phải khớp width/height của .rover-mascot trong CSS
+    // Kích thước: 128px trên desktop; trên điện thoại nhỏ lại theo cạnh ngắn của màn hình
+    const SIZE = isTouch
+        ? Math.round(Math.min(108, Math.max(80, Math.min(window.innerWidth, window.innerHeight) * 0.24)))
+        : 128;
+    const S = SIZE / 128;            // hệ số co giãn cho mọi khoảng cách tính bằng px
 
     // Đuổi theo chuột
-    const FOLLOW_START = 240;        // px: chuột xa hơn mức này thì mascot mới chạy theo
-    const STOP_DIST = 92;            // px: tới gần chuột đến mức này thì dừng
+    const FOLLOW_START = (isTouch ? 150 : 240) * S;        // px: chuột xa hơn mức này thì mascot mới chạy theo
+    const STOP_DIST = 92 * S;            // px: tới gần chuột đến mức này thì dừng
     const EASE_CHASE = 0.07;
-    const MAX_SPEED = 20;            // px / frame (60fps), giới hạn tốc độ chạy
+    const MAX_SPEED = 20 * S;            // px / frame (60fps), giới hạn tốc độ chạy
     const STUCK_FRAMES = 25;         // bị kẹt ở mép màn hình quá lâu thì thôi đuổi
-    const ARRIVE_WAVE_MIN_TRAVEL = 350; // chạy xa hơn mức này tới nơi mới vẫy tay chào
+    const ARRIVE_WAVE_MIN_TRAVEL = 350 * S; // chạy xa hơn mức này tới nơi mới vẫy tay chào
 
     // Lang thang / ngủ
     const EASE_WANDER = 0.04;
-    const WANDER_MAX_SPEED = 2.6;
+    const WANDER_MAX_SPEED = 2.6 * S;
     const WANDER_MAX_WALK_TIME = 9000; // ms tối đa cho một đoạn đi dạo
-    const WANDER_ARRIVE_DIST = 10;
+    const WANDER_ARRIVE_DIST = 10 * S;
     const IDLE_TIMEOUT = 5000;       // ms không di chuột -> đi dạo
     const SLEEP_AFTER = 14000;       // ms đi dạo rồi thì ngáp + ngủ gật (đặt 0 để tắt)
     const YAWN_MS = 1700;
     const GREETING_MS = 2400;        // lúc mới vào trang đứng vẫy tay chào
 
     // Đi bộ (sprite sheet walk)
-    const WALK_STRIDE = 13;          // px di chuyển / 1 khung hình đi bộ
+    const WALK_STRIDE = 13 * S;          // px di chuyển / 1 khung hình đi bộ
     const WALK_MAX_PHASE = 0.32;     // tối đa khung / tick, tránh nhấp nháy khi chạy nhanh
     const WALK_ON_SPEED = 1.0;       // px / tick: nhanh hơn mức này thì chuyển sang sprite đi bộ
     const WALK_OFF_SPEED = 0.5;
 
     // Tương tác với chuột
-    const HIT_RX = 38;               // vùng "người" của mascot (hình elip quanh tâm)
-    const HIT_RY = 58;
+    const HIT_RX = 38 * S;               // vùng "người" của mascot (hình elip quanh tâm)
+    const HIT_RY = 58 * S;
     const PET_BASHFUL_AFTER = 650;   // ms rê chuột lên người -> ngại ngùng
     const PET_HEART_AFTER = 2400;    // ms -> thả tim
-    const DRAG_THRESHOLD = 5;        // px phải kéo xa hơn mức này mới tính là kéo
+    const DRAG_THRESHOLD = isTouch ? 9 : 5;        // px phải kéo xa hơn mức này mới tính là kéo
     const DRAG_EASE = 0.35;
     const FLING_MIN_SPEED = 4;       // px / frame: thả nhanh hơn mức này thì bị ném
     const FLING_MAX_SPEED = 26;
@@ -93,18 +101,23 @@
     const SHAKE_WINDOW = 900;
     const COOLDOWN_AFTER_DROP = 1200; // ms mascot nghỉ, không chạy ngay lại chỗ chuột
 
+    // Chạm (điện thoại)
+    const TAP_MAX_MS = 320;          // chạm nhanh hơn mức này mới tính là "bấm"
+    const TAP_SLOP = 12;             // px: ngón tay lướt xa hơn mức này là cuộn, không phải bấm
+    const TOUCH_LINGER = 6000;       // ms mascot còn "nhớ" điểm chạm cuối rồi mới đi dạo
+
     const TRAIL_MIN_DIST = 16;       // px di chuyển trước khi bắn 1 vệt chấm
     const TRAIL_POOL_SIZE = 10;
 
     const INTERACTIVE_SELECTOR =
         "a, button, input, textarea, select, label, [role='button']";
 
-    const SAFE_TOP = 66;
-    const SAFE_BOTTOM = 66;
-    const SAFE_SIDE = 56;
+    const SAFE_TOP = 66 * S;
+    const SAFE_BOTTOM = 66 * S;
+    const SAFE_SIDE = 56 * S;
 
     // Sprite
-    const DEAD_ZONE = 34;            // px; gần hơn mức này thì nhìn thẳng
+    const DEAD_ZONE = 34 * S;            // px; gần hơn mức này thì nhìn thẳng
     const HYSTERESIS = 0.12;         // chống giật khi sát biên giữa 2 hướng
     const GESTURE_GAP = 1800;        // ms tối thiểu giữa 2 lần chỉ tay khi hover link/nút
     const THUMBS_GAP = 2500;
@@ -139,7 +152,13 @@
         yawn: 6, frustrated: 7, victory: 8
     };
 
-    const WALK_FRAMES = 8;           // 8 khung đầu là một chu kỳ đi bộ
+    // Các ô của sheet walk được phát theo thứ tự (số ô, 0 = ô đầu tiên).
+    // Sheet hiện tại chỉ có chân phải bước lên trước ở cả 8 khung, nên tạm dùng 4 khung
+    // chân đặt phẳng (rộng, hẹp, rộng, hẹp) + lắc lư để không bị cà nhắc.
+    // Khi có sheet đi bộ chuẩn (chân trái và chân phải đổi bước), đổi thành [0, 1, 2, 3, 4, 5, 6, 7].
+    const WALK_SEQUENCE = [0, 1, 4, 5];
+    const WALK_BOB = 3.5 * S;            // px nhún lên xuống mỗi bước
+    const WALK_WADDLE = 2.6;         // độ nghiêng lắc lư trái phải khi bước
 
     // Theo chiều kim đồng hồ từ bên phải (khớp atan2 khi y hướng xuống)
     const CLOCKWISE = [
@@ -194,6 +213,9 @@
     }
 
     // Mỗi sheet là một lớp chồng lên nhau, mỗi lúc chỉ hiện đúng một lớp
+    mascotEl.style.width = SIZE + "px";
+    mascotEl.style.height = SIZE + "px";
+
     const layers = { dir: dirLayer, react: reactLayer };
     const ready = { dir: true, react: true, walk: false, actions: false, work: false };
 
@@ -361,6 +383,11 @@
        ------------------------------------------------------------ */
 
     function loadExtraSheets() {
+        // tiết kiệm dữ liệu / mạng chậm: bỏ qua sheet phụ, mascot vẫn chạy bằng 2 sheet đầu
+        const conn = navigator.connection;
+        if (conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || ""))) {
+            return;
+        }
         Object.keys(EXTRA_SHEETS).forEach((key) => {
             const img = new Image();
             img.onload = () => {
@@ -609,6 +636,9 @@
     }
 
     function updateGrabCursor() {
+        if (isTouch) {
+            return;
+        }
         if (!hovered || mode === "dragging") {
             root.classList.remove("rover-grab");
             return;
@@ -669,19 +699,19 @@
 
     /* ------------------------------------------------------------
        Events
+       Các hàm dùng chung cho chuột và cảm ứng; phần nối sự kiện ở dưới.
        ------------------------------------------------------------ */
 
-    document.addEventListener("mousemove", (event) => {
-        const now = performance.now();
-
-        lastMouseX = event.clientX;
-        lastMouseY = event.clientY;
+    // Con trỏ (chuột hoặc ngón tay đang đè lên mascot) vừa di chuyển
+    function handleMove(x, y, now) {
+        lastMouseX = x;
+        lastMouseY = y;
         lastMouseMoveAt = now;
         mouseInside = true;
 
         // nhấn giữ rồi kéo xa quá ngưỡng -> bắt đầu nhấc mascot lên
         if (press && !press.dragging && !press.onInteractive) {
-            if (Math.hypot(lastMouseX - press.x, lastMouseY - press.y) > DRAG_THRESHOLD) {
+            if (Math.hypot(x - press.x, y - press.y) > DRAG_THRESHOLD) {
                 startDrag();
             }
         }
@@ -703,34 +733,15 @@
         if (hovered) {
             updateGrabCursor();
         }
+    }
 
-        const dx = lastMouseX - lastTrailX;
-        const dy = lastMouseY - lastTrailY;
-        if (Math.hypot(dx, dy) >= TRAIL_MIN_DIST) {
-            spawnTrailDot(lastMouseX, lastMouseY);
-            lastTrailX = lastMouseX;
-            lastTrailY = lastMouseY;
-        }
-    }, { passive: true });
+    // Bắt đầu nhấn / chạm vào người mascot
+    function handlePressStart(x, y, onInteractive, now) {
+        press = { x, y, onInteractive, dragging: false, at: now };
+    }
 
-    document.addEventListener("mousedown", (event) => {
-        if (event.button !== 0 || !inHit(event.clientX, event.clientY)) {
-            return;
-        }
-
-        const under = document.elementFromPoint(event.clientX, event.clientY);
-        const onInteractive = !!(under && under.closest(INTERACTIVE_SELECTOR));
-
-        press = { x: event.clientX, y: event.clientY, onInteractive, dragging: false };
-
-        // không cản click thật vào link/nút; vùng trống thì chặn bôi đen chữ
-        if (!onInteractive) {
-            event.preventDefault();
-        }
-    });
-
-    document.addEventListener("mouseup", (event) => {
-        const now = performance.now();
+    // Thả chuột / nhấc ngón tay
+    function handlePressEnd(x, y, now) {
         const wasPress = press;
         press = null;
 
@@ -740,21 +751,15 @@
         }
 
         // bấm thường (không kéo) trúng người mascot -> nhảy lên
-        if (wasPress && inHit(event.clientX, event.clientY)) {
+        // (cảm ứng: giữ lâu là vuốt ve, không tính là bấm)
+        const quick = !isTouch || (wasPress && now - wasPress.at < TAP_MAX_MS);
+        if (wasPress && quick && inHit(x, y)) {
             boop(now);
             if (mode === "sleeping" || mode === "drowsy" || mode === "wander") {
                 mode = "idle";
             }
         }
-    });
-
-    // Sau khi kéo-thả, không để trang nhận thêm cú click ngoài ý muốn
-    document.addEventListener("click", (event) => {
-        if (performance.now() < suppressClickUntil) {
-            event.stopPropagation();
-            event.preventDefault();
-        }
-    }, true);
+    }
 
     // Người dùng bấm link/nút khi mascot đứng gần -> giơ ngón cái
     document.addEventListener("click", (event) => {
@@ -763,43 +768,11 @@
             return;
         }
         const now = performance.now();
-        const near = distToCursor() <= FOLLOW_START * 1.3;
+        const near =
+            Math.hypot(event.clientX - pos.x, event.clientY - pos.y) <= FOLLOW_START * 1.3;
         if (near && mode === "idle" && now - lastThumbsAt > THUMBS_GAP) {
             lastThumbsAt = now;
             cues = [makeCue("gesture", now, 1100, "actions", ACT.thumbsUp)];
-        }
-    });
-
-    document.addEventListener("pointerover", (event) => {
-        const el = event.target.closest(INTERACTIVE_SELECTOR);
-        if (!el || el === hoveredEl) {
-            return;
-        }
-        hoveredEl = el;
-
-        // chỉ "tò mò" chỉ tay vào link/nút khi mascot đang ở gần và đứng rảnh
-        const now = performance.now();
-        const near = distToCursor() <= FOLLOW_START * 1.3;
-        if (near && mode === "idle" && now - lastGestureAt > GESTURE_GAP) {
-            lastGestureAt = now;
-            if (ready.actions) {
-                const rect = el.getBoundingClientRect();
-                const elementIsLeft = rect.left + rect.width / 2 < pos.x;
-                cues = [makeCue("gesture", now, 1400, "actions", ACT.point, 0, elementIsLeft)];
-            } else {
-                reactCue("surprised", 450, now);
-            }
-        }
-    });
-
-    document.addEventListener("pointerout", (event) => {
-        if (!hoveredEl) {
-            return;
-        }
-        const stillInside =
-            event.relatedTarget && hoveredEl.contains(event.relatedTarget);
-        if (!stillInside) {
-            hoveredEl = null;
         }
     });
 
@@ -822,17 +795,217 @@
         }
     }, { passive: true });
 
-    root.addEventListener("mouseleave", () => {
-        mouseInside = false;           // chuột rời trang -> mascot tự do đi dạo
-        if (hovered) {
-            setHovered(false, performance.now());
-        }
-    });
-
     window.addEventListener("blur", () => {
         press = null;
+        tap = null;
         endDrag(performance.now());
     });
+
+
+    /* ---------------- Chuột (desktop) ---------------- */
+
+    if (!isTouch) {
+
+        document.addEventListener("mousemove", (event) => {
+            const now = performance.now();
+            handleMove(event.clientX, event.clientY, now);
+
+            if (mode === "dragging" || mode === "flung") {
+                return;
+            }
+
+            const dx = lastMouseX - lastTrailX;
+            const dy = lastMouseY - lastTrailY;
+            if (Math.hypot(dx, dy) >= TRAIL_MIN_DIST) {
+                spawnTrailDot(lastMouseX, lastMouseY);
+                lastTrailX = lastMouseX;
+                lastTrailY = lastMouseY;
+            }
+        }, { passive: true });
+
+        document.addEventListener("mousedown", (event) => {
+            if (event.button !== 0 || !inHit(event.clientX, event.clientY)) {
+                return;
+            }
+
+            const under = document.elementFromPoint(event.clientX, event.clientY);
+            const onInteractive = !!(under && under.closest(INTERACTIVE_SELECTOR));
+
+            handlePressStart(event.clientX, event.clientY, onInteractive, performance.now());
+
+            // không cản click thật vào link/nút; vùng trống thì chặn bôi đen chữ
+            if (!onInteractive) {
+                event.preventDefault();
+            }
+        });
+
+        document.addEventListener("mouseup", (event) => {
+            handlePressEnd(event.clientX, event.clientY, performance.now());
+        });
+
+        // Sau khi kéo-thả, không để trang nhận thêm cú click ngoài ý muốn
+        document.addEventListener("click", (event) => {
+            if (performance.now() < suppressClickUntil) {
+                event.stopPropagation();
+                event.preventDefault();
+            }
+        }, true);
+
+        document.addEventListener("pointerover", (event) => {
+            const el = event.target.closest(INTERACTIVE_SELECTOR);
+            if (!el || el === hoveredEl) {
+                return;
+            }
+            hoveredEl = el;
+
+            // chỉ "tò mò" chỉ tay vào link/nút khi mascot đang ở gần và đứng rảnh
+            const now = performance.now();
+            const near = distToCursor() <= FOLLOW_START * 1.3;
+            if (near && mode === "idle" && now - lastGestureAt > GESTURE_GAP) {
+                lastGestureAt = now;
+                if (ready.actions) {
+                    const rect = el.getBoundingClientRect();
+                    const elementIsLeft = rect.left + rect.width / 2 < pos.x;
+                    cues = [makeCue("gesture", now, 1400, "actions", ACT.point, 0, elementIsLeft)];
+                } else {
+                    reactCue("surprised", 450, now);
+                }
+            }
+        });
+
+        document.addEventListener("pointerout", (event) => {
+            if (!hoveredEl) {
+                return;
+            }
+            const stillInside =
+                event.relatedTarget && hoveredEl.contains(event.relatedTarget);
+            if (!stillInside) {
+                hoveredEl = null;
+            }
+        });
+
+        root.addEventListener("mouseleave", () => {
+            mouseInside = false;           // chuột rời trang -> mascot tự do đi dạo
+            if (hovered) {
+                setHovered(false, performance.now());
+            }
+        });
+    }
+
+
+    /* ---------------- Cảm ứng (điện thoại / máy tính bảng) ----------------
+       - Chạm nhanh vào chỗ trống: mascot chạy tới đó (như gọi thú cưng)
+       - Chạm nhanh vào mascot: nhảy; đè giữ: ngại ngùng rồi thả tim
+       - Đè lên mascot rồi kéo: nhấc nó lên; kéo nhanh rồi thả: bị ném đi
+       - Lướt để cuộn trang: mascot không phản ứng, trang cuộn bình thường
+       Chỉ khi ngón tay đặt lên người mascot (và bên dưới không phải link/nút)
+       cử chỉ mới thuộc về mascot; còn lại để trình duyệt xử lý như thường. */
+
+    let tap = null;                  // { x, y, t, moved } cho cú chạm hiện tại
+    let lingerTimer = 0;
+
+    function summonTo(x, y, now) {
+        lastMouseX = x;
+        lastMouseY = y;
+        lastMouseMoveAt = now;
+        mouseInside = true;
+
+        clearTimeout(lingerTimer);
+        lingerTimer = setTimeout(() => { mouseInside = false; }, TOUCH_LINGER);
+
+        if (mode === "dragging" || mode === "flung") {
+            return;
+        }
+        if (mode === "sleeping") {
+            wakeUp(now);
+        } else if (mode === "wander" || mode === "drowsy") {
+            mode = distToCursor() > FOLLOW_START ? "chasing" : "idle";
+            if (mode === "chasing") {
+                chaseStart = { x: pos.x, y: pos.y };
+            }
+            dropMovingCues();
+        }
+    }
+
+    if (isTouch) {
+
+        document.addEventListener("touchstart", (event) => {
+            if (event.touches.length !== 1) {
+                press = null;
+                tap = null;
+                return;
+            }
+
+            const t = event.touches[0];
+            const now = performance.now();
+            tap = { x: t.clientX, y: t.clientY, t: now, moved: false };
+
+            if (!inHit(t.clientX, t.clientY)) {
+                return;
+            }
+
+            const under = document.elementFromPoint(t.clientX, t.clientY);
+            const onInteractive = !!(under && under.closest(INTERACTIVE_SELECTOR));
+
+            lastMouseX = t.clientX;
+            lastMouseY = t.clientY;
+            handlePressStart(t.clientX, t.clientY, onInteractive, now);
+
+            // giữ cử chỉ cho mascot (không cuộn trang, không bôi đen); link/nút thì để yên
+            if (!onInteractive && event.cancelable) {
+                event.preventDefault();
+            }
+        }, { passive: false });
+
+        document.addEventListener("touchmove", (event) => {
+            const t = event.touches[0];
+            if (!t) {
+                return;
+            }
+
+            if (tap && Math.hypot(t.clientX - tap.x, t.clientY - tap.y) > TAP_SLOP) {
+                tap.moved = true;
+            }
+
+            // chỉ khi đang đè lên mascot mới theo dõi ngón tay; lướt cuộn trang thì bỏ qua
+            if (press && !press.onInteractive) {
+                handleMove(t.clientX, t.clientY, performance.now());
+                if (event.cancelable) {
+                    event.preventDefault();
+                }
+            }
+        }, { passive: false });
+
+        document.addEventListener("touchend", (event) => {
+            const t = event.changedTouches[0];
+            if (!t) {
+                return;
+            }
+            const now = performance.now();
+            const wasPress = press;
+            const wasTap = tap;
+            tap = null;
+
+            if (wasPress) {
+                handlePressEnd(t.clientX, t.clientY, now);
+                return;
+            }
+
+            // chạm nhanh vào chỗ trống -> gọi mascot tới đó
+            if (wasTap && !wasTap.moved && now - wasTap.t < TAP_MAX_MS) {
+                const el = event.target.closest?.(INTERACTIVE_SELECTOR);
+                if (!el) {
+                    summonTo(wasTap.x, wasTap.y, now);
+                }
+            }
+        }, { passive: true });
+
+        document.addEventListener("touchcancel", () => {
+            press = null;
+            tap = null;
+            endDrag(performance.now());
+        }, { passive: true });
+    }
 
 
     /* ------------------------------------------------------------
@@ -847,9 +1020,12 @@
         const H = window.innerHeight;
 
         // --- chuột có đang nằm trên người mascot không?
-        const over =
-            mouseInside && mode !== "dragging" && mode !== "flung" &&
-            inHit(lastMouseX, lastMouseY);
+        // (cảm ứng: "hover" = ngón tay đang đè lên người mascot mà chưa kéo)
+        const over = mode !== "dragging" && mode !== "flung" && (
+            isTouch
+                ? !!press && !press.dragging && inHit(lastMouseX, lastMouseY)
+                : mouseInside && inHit(lastMouseX, lastMouseY)
+        );
         if (over !== hovered) {
             setHovered(over, now);
         }
@@ -1038,8 +1214,10 @@
 
         // --- nghiêng người
         if (mode !== "dragging" && mode !== "flung") {
-            const tilt = useWalkSprite ? 0 : clamp(stepX * 1.2, -8, 8);
-            rotation += (tilt - rotation) * easeFor(0.15, dtScale);
+            const tilt = useWalkSprite
+                ? Math.sin((walkPhase / WALK_SEQUENCE.length) * Math.PI * 2) * WALK_WADDLE
+                : clamp(stepX * 1.2, -8, 8);
+            rotation += (tilt - rotation) * easeFor(useWalkSprite ? 0.35 : 0.15, dtScale);
         }
 
         // --- nhìn về đâu (dùng khi đứng yên)
@@ -1072,16 +1250,18 @@
         } else if (ambient) {
             setPose(ambient.sheet, ambient.cell, ambient.flip);
         } else if (useWalkSprite) {
-            setPose("walk", Math.floor(walkPhase) % WALK_FRAMES, facingLeft);
+            setPose("walk", WALK_SEQUENCE[Math.floor(walkPhase) % WALK_SEQUENCE.length], facingLeft);
         } else {
             setPose("dir", directionCell, false);
         }
 
-        // --- nhún nhẹ theo nhịp bước (chỉ khi chưa có sprite đi bộ)
-        const bobbing = moving > 1.2 && !useWalkSprite;
+        // --- nhún nhẹ theo nhịp bước
+        const bobbing = moving > 1.2;
         bobAmp += ((bobbing ? 1 : 0) - bobAmp) * easeFor(0.15, dtScale);
         bobPhase += moving * dtScale * 0.16;
-        const bob = Math.abs(Math.sin(bobPhase)) * 6 * bobAmp;
+        const bob = useWalkSprite
+            ? Math.abs(Math.sin((walkPhase / WALK_SEQUENCE.length) * Math.PI * 2)) * WALK_BOB * bobAmp
+            : Math.abs(Math.sin(bobPhase)) * 6 * bobAmp;
 
         mascotEl.style.transform =
             `translate3d(${(pos.x - SIZE / 2).toFixed(2)}px, ${(pos.y - SIZE / 2).toFixed(2)}px, 0)`;
