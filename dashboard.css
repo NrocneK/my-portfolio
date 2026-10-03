@@ -1175,12 +1175,22 @@
     height: 100%;
 }
 
+.rover-mascot__tilt {
+    transform-origin: 50% 92%;
+}
+
 .rover-mascot__kick {
     transform-origin: 50% 92%;
 }
 
-.rover-mascot.is-kicked .rover-mascot__kick {
-    animation: roverKick 420ms ease-out;
+/* Bấm vào mascot: nhún nhảy lên */
+.rover-mascot.is-hop .rover-mascot__kick {
+    animation: roverHop 460ms cubic-bezier(.3, .7, .4, 1);
+}
+
+/* Thả xuống / dừng sau khi bị ném: bẹp nhẹ lúc chạm đất */
+.rover-mascot.is-land .rover-mascot__kick {
+    animation: roverLand 380ms ease-out;
 }
 
 /* Sprite sheet 3x3: background-size 300% => mỗi ô là bước 0 / 50 / 100%.
@@ -1204,22 +1214,53 @@
     opacity: 0;
 }
 
-@keyframes roverKick {
+@keyframes roverHop {
     0% {
-        transform: scale(1, 1);
+        transform: translateY(0) scale(1, 1);
     }
 
-    30% {
-        transform: scale(.82, 1.16);
+    18% {
+        transform: translateY(0) scale(1.1, .86);
     }
 
-    60% {
-        transform: scale(1.08, .9);
+    50% {
+        transform: translateY(-26px) scale(.92, 1.1);
+    }
+
+    80% {
+        transform: translateY(0) scale(1.08, .9);
+    }
+
+    100% {
+        transform: translateY(0) scale(1, 1);
+    }
+}
+
+@keyframes roverLand {
+    0% {
+        transform: scale(1.12, .84);
+    }
+
+    55% {
+        transform: scale(.95, 1.06);
     }
 
     100% {
         transform: scale(1, 1);
     }
+}
+
+/* Con trỏ khi đưa vào mascot (chỉ khi bên dưới không phải link/nút) */
+html.rover-grab,
+html.rover-grab * {
+    cursor: grab !important;
+}
+
+html.rover-dragging,
+html.rover-dragging * {
+    cursor: grabbing !important;
+    user-select: none !important;
+    -webkit-user-select: none !important;
 }
 
 @keyframes roverTrailFade {

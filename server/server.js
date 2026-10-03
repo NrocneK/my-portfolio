@@ -13,24 +13,24 @@ const { Resend } = require("resend");
    ============================================================ */
 
 const {
-    RESEND_API_KEY,
-    MAIL_FROM = "onboarding@resend.dev",
-    MAIL_TO,
-    ALLOWED_ORIGIN = "",
-    PORT = 3001
+  RESEND_API_KEY,
+  MAIL_FROM = "onboarding@resend.dev",
+  MAIL_TO,
+  ALLOWED_ORIGIN = "",
+  PORT = 3001
 } = process.env;
 
 if (!RESEND_API_KEY || !MAIL_TO) {
-    console.error("Thiếu RESEND_API_KEY hoặc MAIL_TO trong .env");
-    process.exit(1);
+  console.error("Thiếu RESEND_API_KEY hoặc MAIL_TO trong .env");
+  process.exit(1);
 }
 
 const resend = new Resend(RESEND_API_KEY);
 
 const allowedOrigins = ALLOWED_ORIGIN
-    .split(",")
-    .map((origin) => origin.trim())
-    .filter(Boolean);
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 // Giới hạn độ dài khớp với maxlength trong index.html
 const LIMITS = { name: 100, email: 254, subject: 200, message: 5000 };
@@ -44,36 +44,36 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 // Xóa ký tự xuống dòng để chống header injection (subject, name)
 function singleLine(value, max) {
-    return typeof value === "string"
-        ? value.replace(/[\r\n]+/g, " ").trim().slice(0, max)
-        : "";
+  return typeof value === "string"
+    ? value.replace(/[\r\n]+/g, " ").trim().slice(0, max)
+    : "";
 }
 
 function multiLine(value, max) {
-    return typeof value === "string"
-        ? value.replace(/\r\n/g, "\n").trim().slice(0, max)
-        : "";
+  return typeof value === "string"
+    ? value.replace(/\r\n/g, "\n").trim().slice(0, max)
+    : "";
 }
 
 function escapeHtml(text) {
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#39;");
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 }
 
 // Email HTML dùng bố cục table + style inline để hiển thị đúng trên mọi client
 // (Gmail, Outlook... thường bỏ qua <style> trong <head> hoặc CSS hiện đại)
 function buildContactEmailHtml({ name, email, subject, message }) {
-    const safeName = escapeHtml(name);
-    const safeEmail = escapeHtml(email);
-    const safeSubject = escapeHtml(subject);
-    const safeMessage = escapeHtml(message).replace(/\n/g, "<br>");
-    const initial = escapeHtml(name.trim().charAt(0).toUpperCase() || "?");
+  const safeName = escapeHtml(name);
+  const safeEmail = escapeHtml(email);
+  const safeSubject = escapeHtml(subject);
+  const safeMessage = escapeHtml(message).replace(/\n/g, "<br>");
+  const initial = escapeHtml(name.trim().charAt(0).toUpperCase() || "?");
 
-    return `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="vi">
 <head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"></head>
 <body style="margin:0;padding:0;background-color:#eef1f8;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;">
@@ -159,95 +159,95 @@ app.set("trust proxy", 1);
 app.use(express.json({ limit: "20kb" }));
 
 app.use(
-    cors({
-        origin(origin, callback) {
-            // Cho phép request không có Origin (curl, health check)
-            if (!origin || allowedOrigins.includes(origin)) {
-                return callback(null, true);
-            }
-            return callback(new Error("Origin không được phép"));
-        },
-        methods: ["POST", "GET"]
-    })
+  cors({
+    origin(origin, callback) {
+      // Cho phép request không có Origin (curl, health check)
+      if (!origin || allowedOrigins.includes(origin)) {
+        return callback(null, true);
+      }
+      return callback(new Error("Origin không được phép"));
+    },
+    methods: ["POST", "GET"]
+  })
 );
 
 const contactLimiter = rateLimit({
-    windowMs: 60 * 60 * 1000,   // 1 giờ
-    limit: 5,                   // tối đa 5 tin / IP / giờ
-    standardHeaders: true,
-    legacyHeaders: false,
-    handler: (req, res) => {
-        res.status(429).json({ ok: false, error: "RATE_LIMITED" });
-    }
+  windowMs: 60 * 60 * 1000,   // 1 giờ
+  limit: 5,                   // tối đa 5 tin / IP / giờ
+  standardHeaders: true,
+  legacyHeaders: false,
+  handler: (req, res) => {
+    res.status(429).json({ ok: false, error: "RATE_LIMITED" });
+  }
 });
 
 
 app.get("/api/health", (req, res) => {
-    res.json({ ok: true });
+  res.json({ ok: true });
 });
 
 
 app.post("/api/contact", contactLimiter, async (req, res) => {
 
-    const body = req.body || {};
+  const body = req.body || {};
 
-    // Honeypot: bot điền ô ẩn → giả vờ thành công, không gửi mail
-    if (typeof body.website === "string" && body.website.trim() !== "") {
-        return res.json({ ok: true });
+  // Honeypot: bot điền ô ẩn → giả vờ thành công, không gửi mail
+  if (typeof body.website === "string" && body.website.trim() !== "") {
+    return res.json({ ok: true });
+  }
+
+  const name = singleLine(body.name, LIMITS.name);
+  const email = singleLine(body.email, LIMITS.email);
+  const subject = singleLine(body.subject, LIMITS.subject);
+  const message = multiLine(body.message, LIMITS.message);
+
+  const invalidFields = [];
+  if (!name) invalidFields.push("name");
+  if (!EMAIL_PATTERN.test(email)) invalidFields.push("email");
+  if (!subject) invalidFields.push("subject");
+  if (!message) invalidFields.push("message");
+
+  if (invalidFields.length > 0) {
+    return res.status(400).json({
+      ok: false,
+      error: "VALIDATION",
+      fields: invalidFields
+    });
+  }
+
+  try {
+    const { error } = await resend.emails.send({
+      // Chưa verify domain riêng thì bắt buộc phải là onboarding@resend.dev
+      from: `Portfolio Contact <${MAIL_FROM}>`,
+      to: MAIL_TO,
+      // Bấm Reply trong hộp thư sẽ trả lời thẳng cho người gửi
+      replyTo: `${name} <${email}>`,
+      subject: `[Portfolio] ${subject}`,
+      text: `Từ: ${name} <${email}>\n\n${message}`,
+      html: buildContactEmailHtml({ name, email, subject, message })
+    });
+
+    if (error) {
+      console.error("Gửi mail thất bại:", error.message || error);
+      return res.status(500).json({ ok: false, error: "SEND_FAILED" });
     }
 
-    const name = singleLine(body.name, LIMITS.name);
-    const email = singleLine(body.email, LIMITS.email);
-    const subject = singleLine(body.subject, LIMITS.subject);
-    const message = multiLine(body.message, LIMITS.message);
+    return res.json({ ok: true });
 
-    const invalidFields = [];
-    if (!name) invalidFields.push("name");
-    if (!EMAIL_PATTERN.test(email)) invalidFields.push("email");
-    if (!subject) invalidFields.push("subject");
-    if (!message) invalidFields.push("message");
-
-    if (invalidFields.length > 0) {
-        return res.status(400).json({
-            ok: false,
-            error: "VALIDATION",
-            fields: invalidFields
-        });
-    }
-
-    try {
-        const { error } = await resend.emails.send({
-            // Chưa verify domain riêng thì bắt buộc phải là onboarding@resend.dev
-            from: `Portfolio Contact <${MAIL_FROM}>`,
-            to: MAIL_TO,
-            // Bấm Reply trong hộp thư sẽ trả lời thẳng cho người gửi
-            replyTo: `${name} <${email}>`,
-            subject: `[Portfolio] ${subject}`,
-            text: `Từ: ${name} <${email}>\n\n${message}`,
-            html: buildContactEmailHtml({ name, email, subject, message })
-        });
-
-        if (error) {
-            console.error("Gửi mail thất bại:", error.message || error);
-            return res.status(500).json({ ok: false, error: "SEND_FAILED" });
-        }
-
-        return res.json({ ok: true });
-
-    } catch (error) {
-        console.error("Gửi mail thất bại:", error.message);
-        return res.status(500).json({ ok: false, error: "SEND_FAILED" });
-    }
+  } catch (error) {
+    console.error("Gửi mail thất bại:", error.message);
+    return res.status(500).json({ ok: false, error: "SEND_FAILED" });
+  }
 });
 
 
 // Bắt lỗi chung (vd: CORS bị từ chối, JSON sai định dạng)
 app.use((error, req, res, next) => {
-    const status = error.type === "entity.parse.failed" ? 400 : 403;
-    res.status(status).json({ ok: false, error: "BAD_REQUEST" });
+  const status = error.type === "entity.parse.failed" ? 400 : 403;
+  res.status(status).json({ ok: false, error: "BAD_REQUEST" });
 });
 
 
 app.listen(PORT, () => {
-    console.log(`Mail server chạy tại http://localhost:${PORT}`);
+  console.log(`Mail server chạy tại http://localhost:${PORT}`);
 });
