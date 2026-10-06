@@ -6,8 +6,9 @@
      - Đứng yên khi chuột ở gần; chỉ chạy theo khi chuột đi xa,
        và dừng lại ngay khi tới gần (không bám theo một vị trí cố định)
      - Chạy tới nơi thì vẫy tay chào
-     - Rảnh thì đi dạo, dừng lại làm việc vặt (gõ laptop, đọc sách,
-       uống cà phê, nghĩ ngợi...), lâu hơn nữa thì ngáp rồi ngủ gật
+     - Để yên một lúc thì lần lượt: đi vòng vòng, làm việc vặt (gõ laptop, đọc
+       sách, cà phê, nghĩ ngợi...), tập thái cực quyền, đứng nghỉ một chút,
+       rồi ngáp và ngủ gật. Di chuột / chạm thì tỉnh dậy, lần rảnh sau lặp lại.
      - Rê chuột lên người nó: nhìn theo, ngại ngùng, rồi thả tim
      - Bấm: nhảy lên; bấm dồn 4 lần: chóng mặt rồi bực bội
      - Nhấn giữ và kéo: nhấc nó lên; lắc mạnh: chóng mặt; thả nhanh: bị ném đi
@@ -22,7 +23,8 @@
      walk      : 8 khung đi bộ nhìn nghiêng sang phải (hướng trái = lật gương)
      actions   : vẫy x2, thumbs up, vỗ tay, hô vang, ngồi xuống, nhảy, nhún vai, chỉ tay
      work      : gõ laptop x2, suy nghĩ, ý tưởng, cà phê, đọc sách, ngáp, bực bội, cầm cúp
-   3 sheet sau được tải trễ sau khi trang load xong; chưa tải xong thì
+     taichi    : lưới 8x6, 48 khung một bài thái cực quyền tay không (lặp được)
+   Các sheet sau được tải trễ sau khi trang load xong; chưa tải xong thì
    mascot vẫn chạy bình thường bằng 2 sheet đầu.
 
    Chỉ chạy trên desktop có chuột thật (hover:hover, pointer:fine)
@@ -70,19 +72,32 @@
     const STUCK_FRAMES = 25;         // bị kẹt ở mép màn hình quá lâu thì thôi đuổi
     const ARRIVE_WAVE_MIN_TRAVEL = 350 * S; // chạy xa hơn mức này tới nơi mới vẫy tay chào
 
-    // Lang thang / ngủ
+    // Hành vi khi để yên:
+    //   "routine" = theo thứ tự: đi vòng vòng -> việc vặt -> thái cực quyền -> nghỉ -> ngáp -> ngủ
+    //   "wander"  = đi dạo và làm việc vặt ngẫu nhiên mãi, sau SLEEP_AFTER thì ngáp rồi ngủ
+    //   "taichi"  = đứng tại chỗ tập thái cực quyền liên tục (không đi dạo, không ngủ)
+    const IDLE_BEHAVIOR = "routine";
+    const ROUTINE = {
+        strolls: [1, 2],             // số đoạn đi dạo đầu tiên (đi tới điểm ngẫu nhiên rồi đi tiếp)
+        chores: [1, 2],              // số lần đi tới một điểm rồi làm việc vặt
+        rest: [2500, 3500]           // ms đứng nghỉ sau khi tập xong, trước khi ngáp
+    };
+    const TAICHI_LOOPS = [2, 3];     // số vòng liên tục mỗi lượt tập
+    const TAICHI_REST = [1200, 2200]; // ms đứng nghỉ giữa hai lượt (chỉ khi IDLE_BEHAVIOR = "taichi")
+
+    // Lang thang / ngủ (kiểu "wander")
     const EASE_WANDER = 0.04;
-    const WANDER_MAX_SPEED = 2.6 * S;
+    const WANDER_MAX_SPEED = 1.6 * S;
     const WANDER_MAX_WALK_TIME = 9000; // ms tối đa cho một đoạn đi dạo
     const WANDER_ARRIVE_DIST = 10 * S;
-    const IDLE_TIMEOUT = 5000;       // ms không di chuột -> đi dạo
+    const IDLE_TIMEOUT = 4000;       // ms không di chuột / chạm -> bắt đầu hành vi lúc rảnh
     const SLEEP_AFTER = 14000;       // ms đi dạo rồi thì ngáp + ngủ gật (đặt 0 để tắt)
     const YAWN_MS = 1700;
     const GREETING_MS = 2400;        // lúc mới vào trang đứng vẫy tay chào
 
     // Đi bộ (sprite sheet walk)
-    const WALK_STRIDE = 13 * S;          // px di chuyển / 1 khung hình đi bộ
-    const WALK_MAX_PHASE = 0.32;     // tối đa khung / tick, tránh nhấp nháy khi chạy nhanh
+    const WALK_STRIDE = 3.4 * S;          // px di chuyển / 1 khung hình đi bộ
+    const WALK_MAX_PHASE = 0.34;     // tối đa khung / tick, tránh nhấp nháy khi chạy nhanh
     const WALK_ON_SPEED = 1.0;       // px / tick: nhanh hơn mức này thì chuyển sang sprite đi bộ
     const WALK_OFF_SPEED = 0.5;
 
@@ -152,13 +167,11 @@
         yawn: 6, frustrated: 7, victory: 8
     };
 
-    // Các ô của sheet walk được phát theo thứ tự (số ô, 0 = ô đầu tiên).
-    // Sheet hiện tại chỉ có chân phải bước lên trước ở cả 8 khung, nên tạm dùng 4 khung
-    // chân đặt phẳng (rộng, hẹp, rộng, hẹp) + lắc lư để không bị cà nhắc.
-    // Khi có sheet đi bộ chuẩn (chân trái và chân phải đổi bước), đổi thành [0, 1, 2, 3, 4, 5, 6, 7].
-    const WALK_SEQUENCE = [0, 1, 4, 5];
-    const WALK_BOB = 3.5 * S;            // px nhún lên xuống mỗi bước
-    const WALK_WADDLE = 2.6;         // độ nghiêng lắc lư trái phải khi bước
+    // Sheet walk: 16 khung = một chu kỳ đầy đủ hai bước (chân này rồi chân kia vượt lên),
+    // dựng bằng code từ chính pixel của nhân vật (xem walk_rig2.py), lặp liên tục là thành đi bộ.
+    const WALK_SEQUENCE = Array.from({ length: 16 }, (_, i) => i);
+    const WALK_BOB = 0;            // px nhún lên xuống mỗi bước
+    const WALK_WADDLE = 0;         // độ nghiêng lắc lư trái phải khi bước
 
     // Theo chiều kim đồng hồ từ bên phải (khớp atan2 khi y hướng xuống)
     const CLOCKWISE = [
@@ -177,6 +190,23 @@
         { sheet: "actions", cell: ACT.clap }
     ];
 
+    // Sheet tải trễ (đường dẫn tính từ trang index.html); delay = ms sau khi trang load xong
+    const EXTRA_SHEETS = {
+        walk: { src: "assets/mascot/nhut-walk.webp", delay: 600 },
+        actions: { src: "assets/mascot/nhut-actions.webp", delay: 600 },
+        work: { src: "assets/mascot/nhut-work.webp", delay: 600 },
+        taichi: { src: "assets/mascot/nhut-taichi.webp", delay: 1000 }
+    };
+
+    // Số cột/hàng của từng sheet (mặc định 3x3)
+    const GRID = { taichi: { cols: 8, rows: 6 }, walk: { cols: 4, rows: 4 } };
+    const gridOf = (sheet) => GRID[sheet] || { cols: 3, rows: 3 };
+
+    // 16 khung gốc + 2 khung nội suy giữa mỗi cặp = 48 khung -> chuyển động mượt hơn
+    const TAICHI_FRAMES = 48;
+    const TAICHI_PERIOD = 47;        // ms / khung -> một vòng khoảng 2,25 giây
+
+
     // Việc vặt khi đi dạo xong một đoạn: w = độ ưu tiên, ms = [ngắn nhất, dài nhất]
     const ACTIVITIES = [
         { sheet: "work", frames: [WORK.typeA, WORK.typeB], period: 420, w: 4, ms: [3500, 5500] },
@@ -185,16 +215,13 @@
         { sheet: "work", frames: [WORK.read], w: 2, ms: [3500, 5000] },
         { sheet: "work", frames: [WORK.idea], w: 1.5, ms: [1800, 2400] },
         { sheet: "actions", frames: [ACT.shrug], w: 1, ms: [1400, 1800] },
-        { sheet: "actions", frames: [ACT.waveA, ACT.waveB], period: 280, w: 1, ms: [1600, 2200] }
+        { sheet: "actions", frames: [ACT.waveA, ACT.waveB], period: 280, w: 1, ms: [1600, 2200] },
+        {
+            sheet: "taichi",
+            frames: Array.from({ length: TAICHI_FRAMES }, (_, i) => i),
+            period: TAICHI_PERIOD, w: 2.5, loops: [2, 3]
+        }
     ];
-
-    // Sheet tải trễ (đường dẫn tính từ trang index.html)
-    const EXTRA_SHEETS = {
-        walk: "assets/mascot/nhut-walk.webp",
-        actions: "assets/mascot/nhut-actions.webp",
-        work: "assets/mascot/nhut-work.webp"
-    };
-
 
     /* ------------------------------------------------------------
        DOM
@@ -217,12 +244,13 @@
     mascotEl.style.height = SIZE + "px";
 
     const layers = { dir: dirLayer, react: reactLayer };
-    const ready = { dir: true, react: true, walk: false, actions: false, work: false };
+    const ready = { dir: true, react: true, walk: false, actions: false, work: false, taichi: false };
 
     Object.keys(EXTRA_SHEETS).forEach((key) => {
         const layer = document.createElement("span");
         layer.className = `rover-mascot__layer rover-mascot__layer--${key}`;
         layer.style.opacity = "0";
+        layer.style.backgroundSize = `${gridOf(key).cols * 100}% ${gridOf(key).rows * 100}%`;
         kickEl.appendChild(layer);
         layers[key] = layer;
     });
@@ -241,7 +269,7 @@
        State
        ------------------------------------------------------------ */
 
-    // mode: 'idle' | 'chasing' | 'wander' | 'drowsy' | 'sleeping' | 'dragging' | 'flung'
+    // mode: 'idle' | 'chasing' | 'taichi' | 'wander' | 'drowsy' | 'sleeping' | 'dragging' | 'flung'
     let mode = "wander";
 
     let pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
@@ -257,6 +285,9 @@
     // đi dạo: 'walking' (đang đi tới điểm đến) hoặc 'doing' (đang làm việc vặt)
     let wanderPhase = "doing";
     let activityUntil = 0;
+    let taichiRestUntil = 0;
+    let routineSteps = [];
+    let routineIndex = 0;
     let lastActivity = -1;
     let wanderStartedAt = 0;
     let wanderWalkUntil = 0;
@@ -382,6 +413,18 @@
        Tải trễ các sheet phụ
        ------------------------------------------------------------ */
 
+    function loadSheet(key) {
+        const img = new Image();
+        img.onload = () => {
+            layers[key].style.backgroundImage = `url("${EXTRA_SHEETS[key].src}")`;
+            ready[key] = true;
+            if (key === "actions") {
+                greet(performance.now());
+            }
+        };
+        img.src = EXTRA_SHEETS[key].src;
+    }
+
     function loadExtraSheets() {
         // tiết kiệm dữ liệu / mạng chậm: bỏ qua sheet phụ, mascot vẫn chạy bằng 2 sheet đầu
         const conn = navigator.connection;
@@ -389,22 +432,14 @@
             return;
         }
         Object.keys(EXTRA_SHEETS).forEach((key) => {
-            const img = new Image();
-            img.onload = () => {
-                layers[key].style.backgroundImage = `url("${EXTRA_SHEETS[key]}")`;
-                ready[key] = true;
-                if (key === "actions") {
-                    greet(performance.now());
-                }
-            };
-            img.src = EXTRA_SHEETS[key];
+            setTimeout(() => loadSheet(key), EXTRA_SHEETS[key].delay);
         });
     }
 
     if (document.readyState === "complete") {
-        setTimeout(loadExtraSheets, 600);
+        loadExtraSheets();
     } else {
-        window.addEventListener("load", () => setTimeout(loadExtraSheets, 600));
+        window.addEventListener("load", loadExtraSheets);
     }
 
 
@@ -412,10 +447,11 @@
        Sprite: chọn ô trong sheet
        ------------------------------------------------------------ */
 
-    // background-size 300% => mỗi ô là bước 0 / 50 / 100% trên cả 2 trục
-    function setCell(layer, index) {
+    // Lưới cols x rows: background-size = cols*100% x rows*100% => mỗi ô là một bước chia đều
+    function setCell(layer, index, sheet) {
+        const { cols, rows } = gridOf(sheet);
         layer.style.backgroundPosition =
-            `${(index % 3) * 50}% ${Math.floor(index / 3) * 50}%`;
+            `${((index % cols) / (cols - 1)) * 100}% ${(Math.floor(index / cols) / (rows - 1)) * 100}%`;
     }
 
     function setPose(sheet, cell, flip) {
@@ -437,7 +473,7 @@
             layers[sheet].style.opacity = "1";
         }
         if (switching || cell !== pose.cell) {
-            setCell(layers[sheet], cell);
+            setCell(layers[sheet], cell, sheet);
         }
         if (switching || flip !== pose.flip) {
             layers[sheet].style.transform = flip ? "scaleX(-1)" : "";
@@ -570,10 +606,11 @@
        Việc vặt, chào hỏi, ngáp
        ------------------------------------------------------------ */
 
-    function pickActivity() {
+    function pickActivity(onlyChores) {
         const options = ACTIVITIES
             .map((a, i) => ({ a, i }))
-            .filter(({ a, i }) => ready[a.sheet] && i !== lastActivity);
+            .filter(({ a, i }) =>
+                ready[a.sheet] && i !== lastActivity && (!onlyChores || !a.loops));
         if (!options.length) {
             return null;
         }
@@ -589,7 +626,9 @@
     }
 
     function beginActivity(now, act) {
-        const ms = rand(act.ms[0], act.ms[1]);
+        const ms = act.loops
+            ? act.frames.length * act.period * Math.round(rand(act.loops[0], act.loops[1]))
+            : rand(act.ms[0], act.ms[1]);
         cues = [makeCue("activity", now, ms, act.sheet, act.frames, act.period)];
         wanderPhase = "doing";
         activityUntil = now + ms;
@@ -597,12 +636,135 @@
 
     function greet(now) {
         // chỉ chào một lần, và chỉ khi mascot đang đứng chờ lúc mới vào trang
-        if (greeted || mode !== "wander" || wanderPhase !== "doing") {
+        if (greeted) {
+            return;
+        }
+        const startsIdle = IDLE_BEHAVIOR !== "wander";
+        const waiting = startsIdle
+            ? mode === "idle" && now < noWanderUntil
+            : mode === "wander" && wanderPhase === "doing";
+        if (!waiting) {
             return;
         }
         greeted = true;
-        const ms = Math.max(600, activityUntil - now);
+        const until = startsIdle ? noWanderUntil : activityUntil;
+        const ms = Math.max(600, until - now);
         cues = [makeCue("activity", now, ms, "actions", [ACT.waveA, ACT.waveB], 280)];
+    }
+
+    function randInt(min, max) {
+        return Math.round(rand(min, max));
+    }
+
+    // Một lượt rảnh: đi vòng vòng -> việc vặt -> thái cực quyền -> nghỉ -> ngáp -> ngủ
+    function startRoutine(now) {
+        routineSteps = [];
+        for (let i = randInt(ROUTINE.strolls[0], ROUTINE.strolls[1]); i > 0; i--) {
+            routineSteps.push({ type: "walk" });
+        }
+        for (let i = randInt(ROUTINE.chores[0], ROUTINE.chores[1]); i > 0; i--) {
+            routineSteps.push({ type: "chore" });
+        }
+        routineSteps.push({ type: "taichi" }, { type: "rest" });
+        routineIndex = 0;
+        lastActivity = -1;
+
+        mode = "wander";
+        wanderPhase = "doing";
+        wanderStartedAt = now;
+    }
+
+    function advanceRoutine() {
+        routineIndex++;
+    }
+
+    function updateRoutine(now) {
+        const step = routineSteps[routineIndex];
+
+        if (!step) {
+            beginDrowsy(now);                 // hết các bước -> ngáp rồi ngủ
+            return;
+        }
+
+        if (step.type === "walk" || step.type === "chore") {
+            if (!step.started) {
+                step.started = true;
+                step.phase = "walk";
+                wanderPhase = "walking";
+                pickWanderTarget(now);
+                return;
+            }
+            if (step.phase === "walk") {
+                const left = Math.hypot(target.x - pos.x, target.y - pos.y);
+                if (left < WANDER_ARRIVE_DIST || now >= wanderWalkUntil) {
+                    if (step.type === "walk") {
+                        advanceRoutine();
+                    } else {
+                        const act = pickActivity(true);
+                        if (act) {
+                            beginActivity(now, act);
+                            step.phase = "chore";
+                        } else {
+                            advanceRoutine();
+                        }
+                    }
+                }
+            } else if (now >= activityUntil) {
+                advanceRoutine();
+            }
+            return;
+        }
+
+        if (step.type === "taichi") {
+            if (!step.started) {
+                step.started = true;
+                if (!ready.taichi) {
+                    advanceRoutine();
+                    return;
+                }
+                wanderPhase = "doing";
+                target = { x: pos.x, y: pos.y };
+                const ms = TAICHI_FRAMES * TAICHI_PERIOD * randInt(TAICHI_LOOPS[0], TAICHI_LOOPS[1]);
+                cues = [makeCue(
+                    "activity", now, ms, "taichi",
+                    Array.from({ length: TAICHI_FRAMES }, (_, i) => i), TAICHI_PERIOD
+                )];
+                step.until = now + ms;
+            } else if (now >= step.until) {
+                advanceRoutine();
+            }
+            return;
+        }
+
+        // "rest": đứng nghỉ một chút
+        if (!step.started) {
+            step.started = true;
+            wanderPhase = "doing";
+            target = { x: pos.x, y: pos.y };
+            step.until = now + rand(ROUTINE.rest[0], ROUTINE.rest[1]);
+        } else if (now >= step.until) {
+            advanceRoutine();
+        }
+    }
+
+    // Tập thái cực quyền tại chỗ: mỗi lượt vài vòng liên tục, nghỉ chút rồi tập tiếp
+    function startTaichiRound(now) {
+        const rounds = Math.round(rand(TAICHI_LOOPS[0], TAICHI_LOOPS[1]));
+        const ms = TAICHI_FRAMES * TAICHI_PERIOD * rounds;
+        cues = [makeCue(
+            "activity", now, ms, "taichi",
+            Array.from({ length: TAICHI_FRAMES }, (_, i) => i), TAICHI_PERIOD
+        )];
+        taichiRestUntil = now + ms + rand(TAICHI_REST[0], TAICHI_REST[1]);
+    }
+
+    function startTaichi(now) {
+        if (!ready.taichi) {
+            return;                        // sheet chưa tải xong: đứng chờ, thử lại ở frame sau
+        }
+        mode = "taichi";
+        target = { x: pos.x, y: pos.y };
+        startTaichiRound(now);
     }
 
     function beginDrowsy(now) {
@@ -655,7 +817,7 @@
         if (over) {
             if (mode === "sleeping") {
                 wakeUp(now);
-            } else if (mode === "chasing" || mode === "wander" || mode === "drowsy") {
+            } else if (mode === "chasing" || mode === "wander" || mode === "drowsy" || mode === "taichi") {
                 mode = "idle";            // đang được vuốt ve thì đứng yên
                 dropMovingCues();
             }
@@ -679,6 +841,7 @@
         if (mode !== "dragging") {
             return;
         }
+        lastMouseMoveAt = now;
         root.classList.remove("rover-dragging");
         suppressClickUntil = now + 80;
         noChaseUntil = now + COOLDOWN_AFTER_DROP;
@@ -722,7 +885,7 @@
 
         if (mode === "sleeping") {
             wakeUp(now);
-        } else if (mode === "wander" || mode === "drowsy") {
+        } else if (mode === "wander" || mode === "drowsy" || mode === "taichi") {
             mode = distToCursor() > FOLLOW_START ? "chasing" : "idle";
             if (mode === "chasing") {
                 chaseStart = { x: pos.x, y: pos.y };
@@ -737,6 +900,7 @@
 
     // Bắt đầu nhấn / chạm vào người mascot
     function handlePressStart(x, y, onInteractive, now) {
+        lastMouseMoveAt = now;
         press = { x, y, onInteractive, dragging: false, at: now };
     }
 
@@ -744,6 +908,7 @@
     function handlePressEnd(x, y, now) {
         const wasPress = press;
         press = null;
+        lastMouseMoveAt = now;
 
         if (mode === "dragging") {
             endDrag(now);
@@ -755,7 +920,7 @@
         const quick = !isTouch || (wasPress && now - wasPress.at < TAP_MAX_MS);
         if (wasPress && quick && inHit(x, y)) {
             boop(now);
-            if (mode === "sleeping" || mode === "drowsy" || mode === "wander") {
+            if (mode === "sleeping" || mode === "drowsy" || mode === "wander" || mode === "taichi") {
                 mode = "idle";
             }
         }
@@ -918,7 +1083,7 @@
         }
         if (mode === "sleeping") {
             wakeUp(now);
-        } else if (mode === "wander" || mode === "drowsy") {
+        } else if (mode === "wander" || mode === "drowsy" || mode === "taichi") {
             mode = distToCursor() > FOLLOW_START ? "chasing" : "idle";
             if (mode === "chasing") {
                 chaseStart = { x: pos.x, y: pos.y };
@@ -1105,10 +1270,17 @@
                         stillFrames = 0;
                         chaseStart = { x: pos.x, y: pos.y };
                     } else if (
-                        (!mouseInside || now - lastMouseMoveAt > IDLE_TIMEOUT) &&
-                        now > noWanderUntil
+                        now - lastMouseMoveAt > IDLE_TIMEOUT &&
+                        now > noWanderUntil &&
+                        !cues.some((c) => c.until > now)
                     ) {
-                        startWander(now);
+                        if (IDLE_BEHAVIOR === "taichi") {
+                            startTaichi(now);
+                        } else if (IDLE_BEHAVIOR === "routine") {
+                            startRoutine(now);
+                        } else {
+                            startWander(now);
+                        }
                     }
                 }
             }
@@ -1132,7 +1304,13 @@
                 }
             }
 
-            if (mode === "wander") {
+            if (mode === "taichi" && now >= taichiRestUntil) {
+                startTaichiRound(now);       // hết lượt + nghỉ -> tập lượt mới
+            }
+
+            if (mode === "wander" && IDLE_BEHAVIOR === "routine") {
+                updateRoutine(now);
+            } else if (mode === "wander") {
                 if (wanderPhase === "doing") {
                     if (now >= activityUntil) {
                         wanderPhase = "walking";
@@ -1209,7 +1387,9 @@
         }
         const useWalkSprite = walking && ready.walk;
         if (useWalkSprite) {
-            walkPhase += Math.min(WALK_MAX_PHASE, moving / WALK_STRIDE) * dtScale;
+            // đuổi chuột thì bước nhanh hơn (chạy), đi dạo thì bước thong thả
+            const maxPhase = mode === "chasing" ? 0.5 : WALK_MAX_PHASE;
+            walkPhase += Math.min(maxPhase, moving / WALK_STRIDE) * dtScale;
         }
 
         // --- nghiêng người
@@ -1223,7 +1403,7 @@
         // --- nhìn về đâu (dùng khi đứng yên)
         let lookX = pos.x;
         let lookY = pos.y;
-        if (mode === "sleeping" || mode === "drowsy") {
+        if (mode === "sleeping" || mode === "drowsy" || mode === "taichi") {
             // nhìn thẳng
         } else if (mode === "wander") {
             lookX = target.x;
@@ -1279,10 +1459,16 @@
     // Lúc mới vào trang: đứng chờ một chút (để vẫy tay chào khi sheet "actions" tải xong)
     {
         const now = performance.now();
-        mode = "wander";
-        wanderPhase = "doing";
-        wanderStartedAt = now;
-        activityUntil = now + GREETING_MS;
+        if (IDLE_BEHAVIOR !== "wander") {
+            mode = "idle";
+            lastMouseMoveAt = now;               // đếm thời gian rảnh từ lúc vào trang
+            noWanderUntil = now + GREETING_MS;
+        } else {
+            mode = "wander";
+            wanderPhase = "doing";
+            wanderStartedAt = now;
+            activityUntil = now + GREETING_MS;
+        }
     }
 
     mascotEl.classList.add("is-active");
