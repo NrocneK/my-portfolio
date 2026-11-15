@@ -17,6 +17,8 @@
 
   --accent: #7c9cff;
   --accent-strong: #9bb3ff;
+  /* chữ trên nền accent: nền accent ở chế độ tối khá sáng nên chữ phải tối (~7:1) */
+  --on-accent: #0b0f19;
 
   --success: #5ed39b;
   --danger: #ff7272;
@@ -53,8 +55,9 @@ html[data-theme="light"] {
   --border: rgba(15, 23, 42, 0.09);
   --border-strong: rgba(15, 23, 42, 0.16);
 
-  --accent: #496fe8;
+  --accent: #4267dc; /* đậm hơn #496fe8 một chút để chữ trắng trên nút đạt 4.99:1 */
   --accent-strong: #355bd0;
+  --on-accent: #ffffff;
 
   --shadow: 0 20px 50px rgba(15, 23, 42, 0.08);
 }
@@ -375,7 +378,7 @@ h3 {
   position: relative;
   overflow: hidden;
 
-  color: #fff;
+  color: var(--on-accent);
   background: var(--accent);
 }
 

@@ -17,10 +17,7 @@ const dictionary = {
 
 
         "hero.available":
-            "Sẵn sàng cho cơ hội Junior Developer",
-
-        "hero.eyebrow":
-            "JUNIOR FULLSTACK DEVELOPER",
+            "Junior Fullstack Developer · Sẵn sàng nhận việc",
 
         "hero.title":
             "Xây dựng phần mềm từ những vấn đề thực tế.",
@@ -34,11 +31,14 @@ const dictionary = {
         "hero.contact":
             "Liên hệ",
 
-        "hero.building":
-            "Hệ thống Fullstack",
+        "hero.expValue":
+            "5 năm",
 
-        "hero.learning":
-            "Mỗi ngày",
+        "hero.expLabel":
+            "Quản lý kho · đội 5–7 người",
+
+        "hero.wmsLabel":
+            "Dự án đang chạy · xem demo",
 
 
         "about.eyebrow":
@@ -284,10 +284,7 @@ const dictionary = {
 
 
         "hero.available":
-            "Open to Junior Developer opportunities",
-
-        "hero.eyebrow":
-            "JUNIOR FULLSTACK DEVELOPER",
+            "Junior Fullstack Developer · Open to work",
 
         "hero.title":
             "Building software from real operational problems.",
@@ -301,11 +298,14 @@ const dictionary = {
         "hero.contact":
             "Contact Me",
 
-        "hero.building":
-            "Fullstack systems",
+        "hero.expValue":
+            "5 years",
 
-        "hero.learning":
-            "Every day",
+        "hero.expLabel":
+            "Warehouse ops · team of 5–7",
+
+        "hero.wmsLabel":
+            "Live project · open demo",
 
 
         "about.eyebrow":
