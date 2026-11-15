@@ -272,7 +272,8 @@
     // mode: 'idle' | 'chasing' | 'taichi' | 'wander' | 'drowsy' | 'sleeping' | 'dragging' | 'flung'
     let mode = "wander";
 
-    let pos = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
+    // Xuất hiện ở chỗ trống, không đứng giữa màn hình đè lên tiêu đề
+    let pos = pickClearPoint();
     let target = { x: pos.x, y: pos.y };
     let vel = { x: 0, y: 0 };
     let rotation = 0;
@@ -365,8 +366,81 @@
             : Infinity;
     }
 
-    function pickWanderTarget(now) {
-        target = {
+    // Vùng cần tránh (gắn data-mascot-avoid) đang hiện trên màn hình.
+    // Dùng Range.getClientRects() để lấy từng dòng chữ / phần tử thật bên trong,
+    // nên khoảng trống cạnh một dòng ngắn vẫn được tính là chỗ trống.
+    // Phần tử "có hình" thì tránh cả khung: ảnh, icon, nút, thẻ có nền / viền.
+    // Thẻ khối chỉ chứa chữ (h1, p...) thì chỉ tránh các dòng chữ bên trong.
+    function isSolidBox(el) {
+        if (/^(IMG|SVG|VIDEO|CANVAS|PICTURE)$/i.test(el.tagName)) {
+            return true;
+        }
+        const cs = getComputedStyle(el);
+        const bg = cs.backgroundColor;
+        const hasBg = bg && bg !== "transparent" && !/rgba\([^)]*,\s*0\)$/.test(bg);
+        const hasBorder = parseFloat(cs.borderTopWidth) > 0 || parseFloat(cs.borderLeftWidth) > 0;
+        return hasBg || hasBorder || cs.backgroundImage !== "none";
+    }
+
+    function pushRect(rects, r) {
+        if (r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < window.innerHeight) {
+            rects.push(r);
+        }
+    }
+
+    function collectAvoid(el, rects, range) {
+        if (isSolidBox(el)) {
+            pushRect(rects, el.getBoundingClientRect());
+            return;
+        }
+        el.childNodes.forEach((node) => {
+            if (node.nodeType === Node.TEXT_NODE) {
+                if (node.textContent.trim()) {
+                    range.selectNodeContents(node);
+                    for (const r of range.getClientRects()) {
+                        pushRect(rects, r);
+                    }
+                }
+            } else if (node.nodeType === Node.ELEMENT_NODE) {
+                collectAvoid(node, rects, range);
+            }
+        });
+    }
+
+    function avoidRects() {
+        // tạo trong hàm: hàm này chạy ngay lúc khởi tạo (vị trí xuất hiện),
+        // trước khi các const khai báo phía dưới kịp có giá trị
+        const range = document.createRange();
+        const rects = [];
+        document.querySelectorAll("[data-mascot-avoid]").forEach((el) => {
+            const box = el.getBoundingClientRect();
+            if (box.bottom < 0 || box.top > window.innerHeight || box.width === 0) {
+                return;
+            }
+            collectAvoid(el, rects, range);
+        });
+        return rects;
+    }
+
+    // Diện tích thân mascot (vùng "người" HIT_RX x HIT_RY quanh tâm,
+    // cộng thêm một chút khoảng thở) đè lên các vùng cần tránh.
+    function overlapWithText(x, y, rects) {
+        const gap = 10 * S;
+        const halfW = HIT_RX + gap;
+        const halfH = HIT_RY + gap;
+        let area = 0;
+        rects.forEach((r) => {
+            const w = Math.min(x + halfW, r.right) - Math.max(x - halfW, r.left);
+            const h = Math.min(y + halfH, r.bottom) - Math.max(y - halfH, r.top);
+            if (w > 0 && h > 0) {
+                area += w * h;
+            }
+        });
+        return area;
+    }
+
+    function randomPoint() {
+        return {
             x: clamp(
                 Math.random() * window.innerWidth,
                 SAFE_SIDE,
@@ -378,6 +452,27 @@
                 window.innerHeight - SAFE_BOTTOM
             )
         };
+    }
+
+    // Thử nhiều điểm ngẫu nhiên, lấy điểm đầu tiên không đè chữ.
+    // Màn hình hẹp có thể toàn chữ -> lấy điểm đè ít nhất.
+    function pickClearPoint() {
+        const rects = avoidRects();
+        let best = randomPoint();
+        let bestArea = overlapWithText(best.x, best.y, rects);
+        for (let i = 0; i < 80 && bestArea > 0; i++) {
+            const p = randomPoint();
+            const area = overlapWithText(p.x, p.y, rects);
+            if (area < bestArea) {
+                best = p;
+                bestArea = area;
+            }
+        }
+        return best;
+    }
+
+    function pickWanderTarget(now) {
+        target = pickClearPoint();
         wanderWalkUntil = now + WANDER_MAX_WALK_TIME;
     }
 
@@ -1470,6 +1565,23 @@
             activityUntil = now + GREETING_MS;
         }
     }
+
+    // Chỗ đứng ban đầu được chọn trước khi i18n đổi ngôn ngữ (DOMContentLoaded)
+    // và trước khi font tải xong; chữ dài ra có thể lan tới chỗ mascot đứng.
+    // Khi bố cục đã ổn định, nếu mascot chưa bị ai chạm tới mà đang đè chữ thì dời đi.
+    function settleSpawn() {
+        if (mouseInside || mode === "dragging" || mode === "flung") {
+            return;
+        }
+        if (overlapWithText(pos.x, pos.y, avoidRects()) > 0) {
+            pos = pickClearPoint();
+            target = { x: pos.x, y: pos.y };
+            vel = { x: 0, y: 0 };
+        }
+    }
+
+    document.addEventListener("DOMContentLoaded", () => requestAnimationFrame(settleSpawn));
+    document.fonts?.ready.then(() => requestAnimationFrame(settleSpawn));
 
     mascotEl.classList.add("is-active");
     trailContainer.classList.add("is-active");
